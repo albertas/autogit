@@ -1,0 +1,47 @@
+[project]
+name = "git-multi-repo-updater"
+version = "0.0.1"
+authors = [
+    {name = "Albertas Gimbutas", email = "albertasgim@gmail.com"},
+]
+description = "git-multi-repo-updater is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "GitPython >= 3.1.29",
+    "colorama >= 0.4.6"
+]
+
+[tool.mypy]
+exclude = ["venv"]
+python_version = "3.10"
+pretty = true
+color_output = true
+show_error_codes = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+# https://github.com/PyCQA/flake8/issues/234
+# [tool.flake8]
+# inline-quotes = "double"
+# exclude = ["venv"]
+# max-line-length = 120
+# max-complexity = 10
+# max-function-length= 120
+# import-order-style = "google"
+# ignore = "I101,"

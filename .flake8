@@ -1,0 +1,8 @@
+[flake8]
+exclude = build
+inline-quotes = double
+jobs = 4
+application-import-names = git_multi_repo_updater
+max-complexity = 10
+max-function-length= 120
+max-line-length = 120
