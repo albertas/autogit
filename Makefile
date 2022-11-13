@@ -9,3 +9,14 @@ install:
 build:
 	venv/bin/hatch build
 	venv/bin/hatch publish
+
+flake8:
+	venv/bin/flake8 git_multi_repo_updater
+
+mypy:
+	venv/bin/mypy git_multi_repo_updater
+
+test:
+	venv/bin/pytest $(PYTEST_ME_PLEASE)
+
+check: flake8 mypy test

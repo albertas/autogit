@@ -69,6 +69,10 @@ These options could be used to specify more details:
 - [ ] Advanced features:
     - [ ] Merge PRs which have all requirements like approvals met.
 
+## Development
+`make venv` - will create virtual env with dev dependencies.
+`make check` - will run Flake8, MyPy and PyTest checks.
+
 ## Related projects
 This tool was inspired by:
 - https://github.com/earwig/git-repo-updater
