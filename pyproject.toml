@@ -31,7 +31,7 @@ build-backend = "hatchling.build"
 disable = true
 
 [project.scripts]
-git-multi-repo-updater = "git_multi_repo_updater.cli:main"
+git-multi-repo-updater = "gitmultirepoupdater.cli:main"
 
 [tool.mypy]
 exclude = ["build", "dist", "venv"]

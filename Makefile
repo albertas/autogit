@@ -1,9 +1,10 @@
+run:
+	python3 gitmultirepoupdater/cli.py --repos
+
 venv:
 	python3.9 -m venv venv
 	venv/bin/pip install --upgrade pip
 	venv/bin/pip install -r requirements-dev.txt --use-pep517
-
-install:
 	venv/bin/pip install -e .
 
 build:
@@ -11,10 +12,10 @@ build:
 	venv/bin/hatch publish
 
 flake8:
-	venv/bin/flake8 git_multi_repo_updater
+	venv/bin/flake8 gitmultirepoupdater
 
 mypy:
-	venv/bin/mypy git_multi_repo_updater
+	venv/bin/mypy gitmultirepoupdater
 
 test:
 	venv/bin/pytest $(PYTEST_ME_PLEASE)
