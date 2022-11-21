@@ -1,5 +1,5 @@
-run:
-	python3 gitmultirepoupdater/cli.py --repos
+run_manual_test:
+	venv/bin/python gitmultirepoupdater/cli.py --repos https://github.com/albertas/git-multi-repo-updater
 
 venv:
 	python3.9 -m venv venv
@@ -20,4 +20,4 @@ mypy:
 test:
 	venv/bin/pytest $(PYTEST_ME_PLEASE)
 
-check: flake8 mypy test
+check: test flake8 mypy

@@ -2,8 +2,8 @@
 exclude = build dist venv
 inline-quotes = double
 jobs = 4
-application-import-names = gitmultirepoupdater cli
+application-import-names = gitmultirepoupdater cli utils
 max-complexity = 10
 max-function-length= 120
 max-line-length = 120
-ignore = T201
+ignore = T201 I001

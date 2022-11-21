@@ -1,7 +1,7 @@
 import argparse
-from argparse import Namespace
 import sys
-from typing import Dict, Optional, Sequence
+from argparse import Namespace
+from typing import Optional, Sequence
 
 
 def parse_cli_arguments(args: Optional[Sequence[str]] = None) -> Namespace:
@@ -16,7 +16,7 @@ def parse_cli_arguments(args: Optional[Sequence[str]] = None) -> Namespace:
     group_update = parser.add_argument_group("updating repositories")
 
     group_update.add_argument(
-        "-r", "--repos", action='append', dest="repos", nargs="+",
+        "-r", "--repos", action="append", dest="repos", nargs="+",
         type=str, help="Repository url or Path to a file containing list of repository urls")
 
     group_update.add_argument(
@@ -30,7 +30,7 @@ def parse_cli_arguments(args: Optional[Sequence[str]] = None) -> Namespace:
 
 
 def main():
-    args = parse_cli_arguments()
+    parse_cli_arguments()
 
 
 if __name__ == "__main__":
