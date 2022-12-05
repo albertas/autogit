@@ -1,36 +1,19 @@
-import argparse
-import sys
-from argparse import Namespace
-from typing import Optional, Sequence
+from typing import Optional
+from gitmultirepoupdater.utils.argument_parsing import parse_command_line_arguments
+from gitmultirepoupdater.actions.clone_repositories import clone_repositories, get_repository_states
 
+# Should save state about each repository
 
-def parse_cli_arguments(args: Optional[Sequence[str]] = None) -> Namespace:
-    if args is None:
-        args = sys.argv
+def main(args: Optional[list[str]] = None) -> None:
+    args = parse_command_line_arguments(args)
+    repo_states = get_repository_states(file_names_or_repo_urls=args.repos)
 
-    parser = argparse.ArgumentParser(
-        description="Update multiple GitLab or GitHub repositories with a single command.",
-        epilog="""Report bugs and request features at https://github.com/albertas/git-multi-repo-updater/issues""",
-        add_help=False)
-
-    group_update = parser.add_argument_group("updating repositories")
-
-    group_update.add_argument(
-        "-r", "--repos", action="append", dest="repos", nargs="+",
-        type=str, help="Repository url or Path to a file containing list of repository urls")
-
-    group_update.add_argument(
-        "-h", "--help", action="help", default=argparse.SUPPRESS,
-        help="Show this message and exit.")
-
-    parsed_args = parser.parse_args(args=args)
-    parsed_args.repos = [repo for repo_list in parsed_args.repos for repo in repo_list]
-
-    return parsed_args
-
-
-def main():
-    parse_cli_arguments()
+    clone_repositories(repo_states, clone_to=args.clone_to)
+    # create_branch(repo_states)
+    # run_scripts_in_repo(repo_states, commands=args.commands)
+    # commit_changes(repo_states)
+    # push_commit(repo_states)
+    # create_pull_request(repo_states)
 
 
 if __name__ == "__main__":

@@ -7,4 +7,4 @@ mypy:
 test:
 	../venv/bin/pytest $(PYTEST_ME_PLEASE)
 
-check: flake8 mypy test
+check: test flake8 mypy

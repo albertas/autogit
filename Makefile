@@ -1,6 +1,3 @@
-run_manual_test:
-	venv/bin/python gitmultirepoupdater/cli.py --repos https://github.com/albertas/git-multi-repo-updater
-
 venv:
 	python3.9 -m venv venv
 	venv/bin/pip install --upgrade pip
