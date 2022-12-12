@@ -1,19 +1,25 @@
 from typing import Optional
-from gitmultirepoupdater.utils.argument_parsing import parse_command_line_arguments
-from gitmultirepoupdater.actions.clone_repositories import clone_repositories, get_repository_states
+from gitmultirepoupdater.actions.argument_parsing import parse_command_line_arguments
+from gitmultirepoupdater.actions.get_repository_states import get_repository_states
+from gitmultirepoupdater.actions.clone_repositories import clone_repositories
+from gitmultirepoupdater.actions.create_branch import create_branch_for_each_repo
+from gitmultirepoupdater.actions.run_command import run_command_for_each_repo
+from gitmultirepoupdater.actions.commit_and_push_changes import commit_and_push_changes_for_each_repo 
+from gitmultirepoupdater.actions.create_pull_request import create_pull_request_for_each_repo
+from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 # Should save state about each repository
 
 def main(args: Optional[list[str]] = None) -> None:
     args = parse_command_line_arguments(args)
-    repo_states = get_repository_states(file_names_or_repo_urls=args.repos)
+    repo_states = get_repository_states(args)
 
-    clone_repositories(repo_states, clone_to=args.clone_to)
-    # create_branch(repo_states)
-    # run_scripts_in_repo(repo_states, commands=args.commands)
-    # commit_changes(repo_states)
-    # push_commit(repo_states)
-    # create_pull_request(repo_states)
+    with ThrottledTasksExecutor(delay_between_tasks=0.2) as executor:
+        clone_repositories(repo_states, executor)
+        create_branch_for_each_repo(repo_states, executor)
+        run_command_for_each_repo(repo_states, executor)
+        commit_and_push_changes_for_each_repo(repo_states, executor)
+        create_pull_request_for_each_repo(repo_states, executor)
 
 
 if __name__ == "__main__":

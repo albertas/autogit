@@ -1,66 +1,52 @@
-from logging import getLogger
-from urllib.parse import urlparse
+import logging
 import os.path
 
 import git
 
 from gitmultirepoupdater.data_types import RepoState
 from gitmultirepoupdater.constants import CloningStates
+from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
-logger = getLogger()
-
-
-def is_url_or_git(file_names_or_repo_url: str) -> bool:
-    # TODO: use urlparse to verify if its url and use regexp for git url
-    return ".com" in file_names_or_repo_url.lower()
+logger = logging.getLogger()
 
 
-def read_repositories_from_file(repos_filename) -> list[str]:
-    with open(repos_filename) as f:
-        return f.read().split()
-    
+async def clone_repository(repo_state: RepoState) -> None:
+    clone_to = repo_state.args.clone_to
+    repo_path = os.path.join(clone_to, repo_state.repo_name)
 
-def standardize_git_repo_url(url: str) -> str:
-    """Converts repository url to url which is suitable for cloning"""
-    parsed_url = urlparse(url)
+    # TODO: add a way to clone using access token: https://stackoverflow.com/questions/25409700/using-gitlab-token-to-clone-without-authentication/29570677#29570677
+    # git clone https://:YOURKEY@your.gilab.company.org/group/project.git
 
-    if access_token := os.getenv("GITLAB_ACCESS_TOKEN", ""):
-        domain_with_access_token = f"api:{access_token}@{parsed_url.netloc}"
-        parsed_url = parsed_url._replace(netloc=domain_with_access_token)
+    # TODO: add ssh support: urls like git@gitlab.com:niekas/gitlab-api-tests.git
 
-    return parsed_url.geturl()
-
-
-def get_repository_states(file_names_or_repo_urls: list[str]) -> dict[str, RepoState]:
-    repo_urls = []
-    for file_names_or_repo_url in file_names_or_repo_urls:
-        if not is_url_or_git(file_names_or_repo_url) and os.path.exists(file_names_or_repo_url):
-            newly_read_repos = read_repositories_from_file(file_names_or_repo_url)
-            repo_urls.extend(newly_read_repos)
-        else:
-            repo_urls.append(file_names_or_repo_url)
-
-    repo_states = {}
-    for repo_url in repo_urls:
-        standardized_repo_url = standardize_git_repo_url(repo_url)
-        repo_states[repo_url] = RepoState(url=standardized_repo_url)
-
-    return repo_states
-
-
-def clone_repository(repo_url: str, clone_to: str, repo_state: RepoState) -> None:
-    repo_path = os.path.join(clone_to, repo_url.split("/")[-1])
 
     try:
-        git.Repo.clone_from(repo_url, repo_path)
-        repo_state.cloning_state = CloningStates.CLONED.value
+        if os.path.exists(repo_path):  # If repository exists: clean it, pull changes, checkout correct branch
+            logger.warning("Repository already exists, cleaning it")
+            g = git.cmd.Git(repo_path)
+            g.clean("-dfx")
 
-        logger.debug(f"Cloned repo from {repo_url} to {clone_to}")
+            # Update symbolic-refs: git remote set-head origin --auto
+            #   get main branch name:
+            #   git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+            # Switch to main branch
+
+        else:
+            logger.warning(f"Cloning {repo_state.repo_url} to {clone_to}")
+
+            git.Repo.clone_from(repo_state.repo_url, repo_path)
+            repo_state.cloning_state = CloningStates.CLONED.value
+            repo_state.repo_path = repo_path
+
+            logger.warning(f"Cloned repo from {repo_state.repo_url} to {clone_to}")
 
     except git.exc.GitCommandError:
         repo_state.cloning_state = CloningStates.NOT_FOUND.value
+        # TODO: logging level is incorrect (its set to warning).
+        logger.warning("Failed to clone repository", exc_info=True)
 
 
-def clone_repositories(repo_states: dict[str, RepoState], clone_to: str) -> None:
-    for repo_url, repo_state in repo_states.items():
-        clone_repository(repo_state.url, clone_to, repo_state)
+def clone_repositories(repo_states: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+    for repo_state in repo_states.values():
+        executor.run(clone_repository(repo_state))
+    executor.wait_for_tasks_to_finish()

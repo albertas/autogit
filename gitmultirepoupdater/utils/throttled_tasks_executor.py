@@ -7,10 +7,10 @@ class ThrottledTasksExecutor:
     """Executor which allows to run coroutines without hitting throttling limits.
 
     Usage example:
-        async def generate_greeting(name: str) -> str:
-            print(f"Started generation for {name}")
+        async def task(name: str) -> str:
+            print(f"Started greeting generation for {name}")
             await asyncio.sleep(1)
-            print("Done generation for {name}")
+            print("Done greeting generation for {name}")
             return f"Hello, {name}!"
 
         def process_result(greeting: str) -> None:
@@ -36,7 +36,7 @@ class ThrottledTasksExecutor:
         return self
 
     def __exit__(self, *exc_info):
-        asyncio.run(self.wait_for_tasks_to_finish())
+        self.wait_for_tasks_to_finish()
         self.stop()
 
     def start(self, in_separate_process: Optional[bool] = None):
@@ -64,8 +64,11 @@ class ThrottledTasksExecutor:
         self.loop.stop()
         self.is_running = False
 
-    def run(self, coroutine: Union[Coroutine, Callable], *args, callback: Callable, **kwargs):
+    def run(self, coroutine: Union[Coroutine, Callable], *args, callback: Optional[Callable] = None, **kwargs):
         """Executes coroutine in an executor thread, which makes sure not to hit throttling limits."""
+
+        if callback is None:
+            callback = lambda *args, **kwargs: None
 
         if not isinstance(coroutine, Coroutine):
             coroutine = coroutine(*args, **kwargs)
@@ -76,9 +79,12 @@ class ThrottledTasksExecutor:
         self.running_tasks.add(task)
         task.add_done_callback(self._mark_task_done(callback))
 
-    async def wait_for_tasks_to_finish(self):
+    def wait_for_tasks_to_finish(self):
+        asyncio.run(self.async_wait_for_tasks_to_finish())
+
+    async def async_wait_for_tasks_to_finish(self):
         while self.running_tasks:
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(0.1)
 
     async def _allow_task_execution(self, every: float, count: int = 1):
         """Periodically emits event, which allows for `count` tasks to be executed.
@@ -97,7 +103,7 @@ class ThrottledTasksExecutor:
             await asyncio.sleep(every)
 
     def _throttled_task(self, coroutine: Coroutine) -> Coroutine:
-        """Decorator for coroutine, which waits for permission before executing the coroutine."""
+        """Decorator for coroutine to wait for permission before executing the coroutine."""
         async def throttled_task_wrapper(*args, **kwargs):
             async with self.can_task_be_executed:
                 await self.can_task_be_executed.wait()
@@ -105,7 +111,7 @@ class ThrottledTasksExecutor:
         return throttled_task_wrapper()
 
     def _mark_task_done(self, callback):
-        """Decorator for callback, which sets the task as done after the callback is processed."""
+        """Decorator for callback to set the task as done after the callback is processed."""
         def task_done_wrapper(task):
             task_result = task.result()
             callback_result = callback(task_result)

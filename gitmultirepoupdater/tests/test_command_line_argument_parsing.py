@@ -15,6 +15,9 @@ class CommandLineArgumentParsingTests(TestCase):
         args = parse_command_line_arguments(["--repo", "foo", "--repos", "bar", "-r", "spam"])
         self.assertEqual(args.repos, ["foo", "bar", "spam"])
 
+        args = parse_command_line_arguments(["--repos", "foo", "bar"])
+        self.assertEqual(args.repos, ["foo"])
+
         args = parse_command_line_arguments([])
         self.assertEqual(args.repos, [])
 
@@ -40,3 +43,13 @@ class CommandLineArgumentParsingTests(TestCase):
         args = parse_command_line_arguments(["--verbose"])
         self.assertTrue(args.verbose)
         self.assertEqual(logging.getLogger().level, logging.DEBUG)
+
+    def test_commands_parsing(self):
+        args = parse_command_line_arguments(["ls"])
+        self.assertEqual(args.commands, ["ls"])
+
+        args = parse_command_line_arguments(["ls", "pwd"])
+        self.assertEqual(args.commands, ["ls", "pwd"])
+
+        args = parse_command_line_arguments(["-r", "repos.txt", "ls", "pwd"])
+        self.assertEqual(args.commands, ["ls", "pwd"])

@@ -1,0 +1,58 @@
+This flow is being executed for each repository specified by the users:
+    - default branch is cloned.
+    - source-branch is created (randomised name is used if not specified).
+    - script or bash command is executed in the cloned repository
+    - commit is being made if there were changes
+    - changes are being pushed to remote branch
+    - Pull request is being created with with custom description
+     - Wait till all the checks succeed.
+    - Pull request is being merged.
+
+
+A state, which persists on the file is being created for each repository.
+The state consists of planned steps to be executed.
+    each step has state (dictionary with loose structure):
+        not_started, being executed, done, aborted, error, skipped
+        errors
+        reason
+
+
+When step is finished - next step should be initiated.
+If stopped - user initiates next step.
+
+
+
+This tool will mainly run as a command line tool `git-multi-repo-updater`,
+but it also will have a GUI application implemented with tkinter,
+which could be started using `git-multi-repo-updater-gui` command.
+
+
+
+P1: Should GUI application be implemented in addition to the command line tool?
+What are the advantages of using GUI application:
+1. Interacting with individual states: pausing, replaying.
+2. Adding additional repositories.
+3. Adjusting the throtling timeout.
+What are the dissadvantages:
+no easy way to draw a graph programatically with branches
+I can draw the graph myself with generic figures.
+
+P2: Is flow execution always linear, or may it have branches?
+Its hard to support flow with branches using GUI, unless only executed steps are shown in linear manner.
+
+P3: Should consentrate on command line tool, I could later use cli graphics like curses.
+For the first iteration simply print to std without any formatting.
+
+P4: What command line options should be there?
+`-v` - logging level.
+`--log-to` `file where logs are stored` - (log_files should be create per run per repository).
+`--pr-branch`
+`--target-branch`
+`--create-pr-from-branch`
+`--pr-title`
+`--pr-description` might be a file or a message
+`--commit-message`
+`--dry`
+`--merge`
+`--skip-ci`
+`--skip-archived`
