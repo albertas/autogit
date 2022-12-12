@@ -79,6 +79,21 @@ class ThrottledTasksExecutor:
         self.running_tasks.add(task)
         task.add_done_callback(self._mark_task_done(callback))
 
+    def run_not_throttled(self, coroutine: Union[Coroutine, Callable], *args, callback: Optional[Callable] = None, **kwargs):
+        """Executes coroutine in an executor event loop ignoring throttled tasks queue."""
+
+        if callback is None:
+            callback = lambda *args, **kwargs: None
+
+        if not isinstance(coroutine, Coroutine):
+            coroutine = coroutine(*args, **kwargs)
+        if not isinstance(coroutine, Coroutine):
+            raise ValueError("Can only execute coroutines, not coroutine provided")
+
+        task = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
+        self.running_tasks.add(task)
+        task.add_done_callback(self._mark_task_done(callback))
+
     def wait_for_tasks_to_finish(self):
         asyncio.run(self.async_wait_for_tasks_to_finish())
 
