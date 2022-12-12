@@ -38,5 +38,5 @@ async def create_branch(repo_state: RepoState):
 
 def create_branch_for_each_repo(repo_states: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo_state in repo_states.values():
-        executor.run(create_branch(repo_state))
+        executor.run_not_throttled(create_branch(repo_state))
     executor.wait_for_tasks_to_finish()

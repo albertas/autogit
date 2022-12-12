@@ -25,5 +25,5 @@ async def run_command(repo_state: RepoState) -> None:
 
 def run_command_for_each_repo(repo_states: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo_state in repo_states.values():
-        executor.run(run_command(repo_state))
+        executor.run_not_throttled(run_command(repo_state))
     executor.wait_for_tasks_to_finish()
