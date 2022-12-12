@@ -17,8 +17,9 @@ def is_url_or_git(file_names_or_repo_url: str) -> bool:
 
 
 def read_repositories_from_file(repos_filename) -> list[str]:
+    """Reads a list of repositories from a file while ignoring commented out lines."""
     with open(repos_filename) as f:
-        return f.read().split()
+        return [l.strip() for l in f.readlines() if not l.strip().startswith("#")]
     
 
 access_token_var_names = {
