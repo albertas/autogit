@@ -4,7 +4,10 @@ from typing import Optional
 from random import randint
 from string import ascii_letters, digits
 
+from git.cmd import Git
+
 from gitmultirepoupdater.constants import ACCESS_TOKEN_VAR_NAMES
+from gitmultirepoupdater.data_types import RepoState
 
 
 def flatten_list(list_of_lists: Optional[list[list[str]]]) -> list[str]:
@@ -59,3 +62,10 @@ def get_repo_owner(url: str) -> str:
 def get_repo_name(url: str) -> str:
     """Parses repository name from a valid Git url."""
     return remove_suffix(url.split("/")[-1], ".git")
+
+
+def get_default_branch(repo: RepoState):
+    g = Git(repo.directory)
+    default_branch_name: str = g.execute(["git", "rev-parse", "--abbrev-ref", "origin/HEAD"])  # type: ignore
+    default_branch_name = default_branch_name.split("/", 1)[-1]  # removes `origin/` prefix from the result
+    return default_branch_name

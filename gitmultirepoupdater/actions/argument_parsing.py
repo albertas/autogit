@@ -1,11 +1,10 @@
 import argparse
 import logging
 import sys
-from argparse import Namespace
 from typing import Optional
 from gitmultirepoupdater.data_types import CliArguments
 
-from gitmultirepoupdater.utils.helpers import flatten_list, get_random_hex
+from gitmultirepoupdater.utils.helpers import get_random_hex
 
 
 def get_argument_parser():
@@ -33,6 +32,14 @@ def get_argument_parser():
         help="Increase verbosity and show DEBUG logs")
 
     parser.add_argument(
+        "-b", "--branch", action="store", dest="branch", type=str, nargs="?",
+        help="Branch name which will be used to apply changes (it will be created if it does not exist)")
+
+    parser.add_argument(
+        "-t", "--target-branch", action="store", dest="target_branch", type=str, nargs="?",
+        help="Target branch name which will be used to pull changes into")
+
+    parser.add_argument(
         "-h", "--help", action="help", default=argparse.SUPPRESS,
         help="Show this message and exit.")
 
@@ -52,8 +59,5 @@ def parse_command_line_arguments(args: Optional[list[str]] = None) -> CliArgumen
 
     if parsed_args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-
-    # TODO: Why repos are no longer flattened?
-    # parsed_args.repos = flatten_list(parsed_args.repos)
 
     return parsed_args

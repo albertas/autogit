@@ -1,4 +1,5 @@
 import git
+from git.cmd import Git
 
 from gitmultirepoupdater.utils.helpers import to_kebab_case
 from gitmultirepoupdater.data_types import RepoState
@@ -9,9 +10,8 @@ async def create_branch(repo: RepoState):
     new_branch_name = to_kebab_case(repo.args.commit_message)
     repo.branch = new_branch_name
 
-    g = git.Repo(repo.directory)
-    new_branch = g.create_head(new_branch_name)
-    new_branch.checkout()
+    g = Git(repo.directory)
+    g.execute(["git", "checkout", "-B", repo.branch])
 
 
 def create_branch_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:

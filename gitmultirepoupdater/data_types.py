@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from gitmultirepoupdater.constants import CloningStates, PullRequestStates, ModificationState
 
 
@@ -9,6 +10,7 @@ class CliArguments:
     commands: list[str]
     commit_message: str
     verbose: bool
+    branch: Optional[str]
 
 
 @dataclass
@@ -17,7 +19,7 @@ class RepoState:
 
     source_branch: str = ""  # Branch name from which a new branch for changes will be created
     branch: str = ""  # Branch name in which changes will be made and commited
-    target_branch: str = ""  # Base branch into which PR changes will be pulled into
+    target_branch: str = ""  # Base branch into which PR changes will be pulled
 
     cloning_state: str = CloningStates.NOT_STARTED.value
     modification_state: str = ModificationState.NOT_STARTED.value

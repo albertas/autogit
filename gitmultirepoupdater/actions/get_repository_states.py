@@ -4,7 +4,7 @@ import os
 import os.path
 
 from gitmultirepoupdater.data_types import CliArguments, RepoState
-from gitmultirepoupdater.utils.helpers import get_repo_name, get_repo_owner, get_domain
+from gitmultirepoupdater.utils.helpers import get_repo_name, get_repo_owner, get_domain, to_kebab_case
 
 logger = logging.getLogger()
 
@@ -29,17 +29,22 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
         else:
             repo_urls.append(file_names_or_repo_url)
 
+
+    branch = args.branch or to_kebab_case(args.commit_message)
+
     repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
         repo_name = get_repo_name(repo_url)
         repo_owner = get_repo_owner(repo_url)
         domain = get_domain(repo_url)
+
         repos[repo_name] = RepoState(
             args=args,
             name=repo_name,
             owner=repo_owner,
             url=repo_url,
-            domain=domain
+            domain=domain,
+            branch=branch,
         )
 
     return repos
