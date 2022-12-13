@@ -36,7 +36,7 @@ async def clone_repository(repo: RepoState) -> None:
         if os.path.exists(repo.directory):  # If repository exists: clean it, pull changes, checkout default branch
             g = Git(repo.directory)
             g.clean("-dfx")
-            g.execute(["git", "fetch"])
+            g.execute(["git", "fetch", "--all"])
 
             default_branch = get_default_branch(repo)
             g.checkout(default_branch)
@@ -45,6 +45,9 @@ async def clone_repository(repo: RepoState) -> None:
         else:
             repo_access_url = get_repo_access_url(repo.url)
             git.Repo.clone_from(repo_access_url, repo.directory)
+
+            g = Git(repo.directory)
+            g.execute(["git", "fetch", "--all"])
 
             repo.cloning_state = CloningStates.CLONED.value
 

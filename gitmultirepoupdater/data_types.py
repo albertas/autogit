@@ -24,6 +24,8 @@ class RepoState:
     cloning_state: str = CloningStates.NOT_STARTED.value
     modification_state: str = ModificationState.NOT_STARTED.value
     pull_request_state: str = PullRequestStates.NOT_CREATED.value
+    pull_request_status_code: Optional[int] = None
+    pull_request_reason: Optional[str] = None
 
     name: str = ""  # Short human readable repo identifier
     owner: str = ""  # Owner of this repo
