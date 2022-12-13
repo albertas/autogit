@@ -1,4 +1,5 @@
 import os.path
+from typing import Optional
 from urllib.parse import urlparse
 
 import git
@@ -10,7 +11,7 @@ from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExe
 from gitmultirepoupdater.utils.helpers import get_access_token, get_default_branch
 
 
-def get_repo_access_url(url: str) -> str:
+def get_repo_access_url(url: str) -> Optional[str]:
     """Converts repository url to url which is suitable for cloning"""
 
     if access_token := get_access_token(url):
@@ -18,7 +19,7 @@ def get_repo_access_url(url: str) -> str:
         domain_with_access_token = f"api:{access_token}@{parsed_url.netloc.split('@')[-1]}"
         parsed_url = parsed_url._replace(netloc=domain_with_access_token, scheme="https")
         return parsed_url.geturl()
-    return url
+    return None
 
 
 async def clone_repository(repo: RepoState) -> None:
@@ -43,13 +44,15 @@ async def clone_repository(repo: RepoState) -> None:
 
             repo.cloning_state = CloningStates.CLONED.value
         else:
-            repo_access_url = get_repo_access_url(repo.url)
-            git.Repo.clone_from(repo_access_url, repo.directory)
+            if repo_access_url := get_repo_access_url(repo.url):
+                git.Repo.clone_from(repo_access_url, repo.directory)
 
-            g = Git(repo.directory)
-            g.execute(["git", "fetch", "--all"])
+                g = Git(repo.directory)
+                g.execute(["git", "fetch", "--all"])
 
-            repo.cloning_state = CloningStates.CLONED.value
+                repo.cloning_state = CloningStates.CLONED.value
+            else:
+                repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
 
         repo.target_branch = repo.target_branch or get_default_branch(repo)
 

@@ -1,6 +1,3 @@
-> **Warning**
-> This tool is still under active development
-
 `git-multi-repo-updater` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
 
 ## Usage
