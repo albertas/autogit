@@ -3,10 +3,10 @@
 import glob
 import os
 import re
-from typing import Optional
+from typing import List, Optional
 
 
-def get_all_file_paths(directory: Optional[str] = None) -> list[str]:
+def get_all_file_paths(directory: Optional[str] = None) -> List[str]:
     """Provides a list of file-paths for every file in a directory (including subdirectories)."""
     if directory is None:
         directory = os.getcwd()

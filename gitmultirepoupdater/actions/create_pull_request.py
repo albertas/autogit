@@ -1,9 +1,8 @@
 import json
 from logging import getLogger
-from typing import TypedDict, Union
+from typing import Dict
 
 import httpx
-from git.cmd import Git
 from gitmultirepoupdater.constants import PullRequestStates
 
 from gitmultirepoupdater.data_types import RepoState, HttpRequestParams
@@ -86,7 +85,7 @@ async def create_pull_request(repo: RepoState):
             repo.pull_request_reason = json.dumps(response.json())
 
 
-def create_pull_request_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+def create_pull_request_for_each_repo(repos: Dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo in repos.values():
         executor.run(create_pull_request(repo))
     executor.wait_for_tasks_to_finish()

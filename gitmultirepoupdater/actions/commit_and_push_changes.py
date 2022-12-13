@@ -1,3 +1,4 @@
+from typing import Dict
 import git
 from logging import getLogger
 from gitmultirepoupdater.constants import ModificationState
@@ -19,7 +20,7 @@ async def commit_and_push_changes(repo: RepoState) -> None:
         repo.modification_state = ModificationState.NO_FILES_CHANGED.value
 
 
-def print_modified_repositories(repos: dict[str, RepoState]):
+def print_modified_repositories(repos: Dict[str, RepoState]):
     print()
     print("\033[1;34m|" + "Updated repositories".center(77, "-") + "|\033[0m")
     should_print_not_modified_repos = False
@@ -48,7 +49,7 @@ def print_modified_repositories(repos: dict[str, RepoState]):
     print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
 
 
-def commit_and_push_changes_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+def commit_and_push_changes_for_each_repo(repos: Dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo in repos.values():
         executor.run(commit_and_push_changes(repo))
     executor.wait_for_tasks_to_finish()

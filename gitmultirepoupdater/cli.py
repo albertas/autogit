@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from gitmultirepoupdater.actions.argument_parsing import parse_command_line_arguments
 from gitmultirepoupdater.actions.get_repository_states import get_repository_states
 from gitmultirepoupdater.actions.clone_repositories import clone_repositories
@@ -9,7 +9,7 @@ from gitmultirepoupdater.actions.create_pull_request import create_pull_request_
 from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
-def main(args: Optional[list[str]] = None) -> None:
+def main(args: Optional[List[str]] = None) -> None:
     cli_args = parse_command_line_arguments(args)
     repos = get_repository_states(cli_args)
 

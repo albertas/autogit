@@ -1,6 +1,6 @@
 import os
 from urllib.parse import urlparse
-from typing import Optional
+from typing import List, Optional
 from random import randint
 from string import ascii_letters, digits
 
@@ -10,7 +10,7 @@ from gitmultirepoupdater.constants import ACCESS_TOKEN_VAR_NAMES
 from gitmultirepoupdater.data_types import RepoState
 
 
-def flatten_list(list_of_lists: Optional[list[list[str]]]) -> list[str]:
+def flatten_list(list_of_lists: Optional[List[List[str]]]) -> List[str]:
     """Concatenates lists into one list."""
     if not list_of_lists:
         return []

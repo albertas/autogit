@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, List, Optional
 from gitmultirepoupdater.constants import CloningStates, PullRequestStates, ModificationState
 
 
 @dataclass
 class CliArguments:
-    repos: list[str]
+    repos: List[str]
     clone_to: str
-    commands: list[str]
+    commands: List[str]
     commit_message: str
     verbose: bool
     branch: Optional[str]
@@ -41,5 +41,5 @@ class RepoState:
 @dataclass
 class HttpRequestParams:
     url: str
-    headers: dict[str, str]
-    data: dict[str, str]
+    headers: Dict[str, str]
+    data: Dict[str, str]

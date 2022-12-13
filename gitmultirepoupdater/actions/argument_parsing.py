@@ -1,7 +1,7 @@
 import argparse
 import logging
 import sys
-from typing import Optional
+from typing import List, Optional
 from gitmultirepoupdater.data_types import CliArguments
 
 from gitmultirepoupdater.utils.helpers import get_random_hex
@@ -50,7 +50,7 @@ def get_argument_parser():
     return parser
 
 
-def parse_command_line_arguments(args: Optional[list[str]] = None) -> CliArguments:
+def parse_command_line_arguments(args: Optional[List[str]] = None) -> CliArguments:
     if args is None:
         args = sys.argv[1:]
 

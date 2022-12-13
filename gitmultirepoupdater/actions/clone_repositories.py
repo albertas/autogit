@@ -1,5 +1,5 @@
 import os.path
-from typing import Optional
+from typing import Dict, Optional
 from urllib.parse import urlparse
 
 import git
@@ -77,7 +77,7 @@ def print_cloned_repositories(repos):
     print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
 
 
-def clone_repositories(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+def clone_repositories(repos: Dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo in repos.values():
         executor.run(clone_repository(repo))
     executor.wait_for_tasks_to_finish()
