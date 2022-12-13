@@ -3,6 +3,7 @@ import logging
 import sys
 from argparse import Namespace
 from typing import Optional
+from gitmultirepoupdater.data_types import CliArguments
 
 from gitmultirepoupdater.utils.helpers import flatten_list, get_random_hex
 
@@ -42,16 +43,17 @@ def get_argument_parser():
     return parser
 
 
-def parse_command_line_arguments(args: Optional[list[str]] = None) -> Namespace:
+def parse_command_line_arguments(args: Optional[list[str]] = None) -> CliArguments:
     if args is None:
         args = sys.argv[1:]
 
     parser = get_argument_parser()
-    parsed_args = parser.parse_args(args=args)
+    parsed_args: CliArguments = parser.parse_args(args=args)  # type: ignore
 
     if parsed_args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
+    # TODO: Why repos are no longer flattened?
     # parsed_args.repos = flatten_list(parsed_args.repos)
 
     return parsed_args

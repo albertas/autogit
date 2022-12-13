@@ -1,7 +1,8 @@
 from logging import getLogger
-from typing import Optional, Tuple
+from typing import Union
 
 import httpx
+from git.cmd import Git
 
 from gitmultirepoupdater.data_types import RepoState
 from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
@@ -9,30 +10,35 @@ from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExe
 logger = getLogger()
 
 
-def get_pull_request_http_request_data(repo_url: str, from_branch: str, to_branch: Optional[str]) -> Tuple[str, str, str]:
-    owner, name = get_repo_owner_and_name(repo_url)
+def get_http_request_params_for_pull_request_creation(repo: RepoState) -> dict[str, Union[str, dict]]:
+    # Gitlab create MR docs: https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
+    # Github create MR docs: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
+    repo.target_branch = get_target_branch(repo)
 
-    domain = "https://api.github.com/repos/OWNER/REPO/pulls"
+    domain = f"https://api.github.com/repos/{repo.owner}/{repo.name}/pulls"
     headers = {
       "Accept": "application/vnd.github+json",
       "Authorization": f"Bearer {GITHUB_OAUTH_TOKEN}",
       "X-GitHub-Api-Version": "2022-11-28"
     }
     data = {
-        "title": repo_state.commit_message,
-        "body": repo_state.body,
-        "head": repo_state.head,
-        "base": repo_state.base,  # this parameter should be optional
+        "title": repo.args.commit_message,
+        "body": repo.args.commit_message,
+        "head": repo.branch,
+        "base": repo.target_branch,  # this parameter should be optional
     }
 
-    return
+    return {
+        "domain": domain,
+        "headers": headers,
+        "data": data,
+    }
 
-# Gitlab create MR docs: https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
-# Github create MR docs: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
 
-async def create_pull_request(repo_state: RepoState):
+
+async def create_pull_request(repo: RepoState):
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
-    url, headers, data = get_pr_request_data()
+    url, headers, data = get_http_request_params_for_pull_request_creation(repo)
 
     client = httpx.Client()
     client.post()
@@ -48,7 +54,7 @@ async def create_pull_request(repo_state: RepoState):
     pass
 
 
-def create_pull_request_for_each_repo(repo_states: list[RepoState], executor: ThrottledTasksExecutor) -> None:
-    for repo_state in repo_states:
-        executor.run(create_pull_request(repo_state))
+def create_pull_request_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+    for repo in repos.values():
+        executor.run(create_pull_request(repo))
     executor.wait_for_tasks_to_finish()

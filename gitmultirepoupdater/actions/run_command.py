@@ -5,8 +5,8 @@ from gitmultirepoupdater.data_types import RepoState
 from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
-async def run_command(repo_state: RepoState) -> None:
-    commands = repo_state.args.commands
+async def run_command(repo: RepoState) -> None:
+    commands = repo.args.commands
 
     # Expand the name of the first argument if its a file and its in current directory
     if commands and os.path.exists(commands[0]) and os.path.isfile(commands[0]):
@@ -14,8 +14,8 @@ async def run_command(repo_state: RepoState) -> None:
 
     # Execute commands
     proc = subprocess.Popen(
-        repo_state.args.commands,
-        cwd=os.path.abspath(repo_state.repo_path),
+        repo.args.commands,
+        cwd=os.path.abspath(repo.directory),
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
@@ -23,7 +23,7 @@ async def run_command(repo_state: RepoState) -> None:
     stdout, stderr = proc.communicate()
 
 
-def run_command_for_each_repo(repo_states: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
-    for repo_state in repo_states.values():
-        executor.run_not_throttled(run_command(repo_state))
+def run_command_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+    for repo in repos.values():
+        executor.run_not_throttled(run_command(repo))
     executor.wait_for_tasks_to_finish()

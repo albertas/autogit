@@ -1,7 +1,7 @@
 import logging
 from urllib.parse import urlparse
 
-from collections import defaultdict
+import os
 import os.path
 
 from gitmultirepoupdater.data_types import CliArguments, RepoState
@@ -47,6 +47,9 @@ def standardize_git_repo_url(url: str) -> str:
     return parsed_url.geturl()
 
 
+def get_repo_owner(url: str) -> str:
+    return url.rsplit("/", 2)[1]
+
 def get_repo_name(url: str) -> str:
     return remove_suffix(url.split("/")[-1], ".git")
 
@@ -60,14 +63,16 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
         else:
             repo_urls.append(file_names_or_repo_url)
 
-    repo_states = {}
+    repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
         standardized_repo_url = standardize_git_repo_url(repo_url)
         repo_name = get_repo_name(repo_url)
-        repo_states[repo_name] = RepoState(
+        repo_owner = get_repo_owner(repo_url)
+        repos[repo_name] = RepoState(
             args=args,
-            repo_name=repo_name,
-            repo_url=standardized_repo_url
+            name=repo_name,
+            owner=repo_owner,
+            url=standardized_repo_url
         )
 
-    return repo_states
+    return repos
