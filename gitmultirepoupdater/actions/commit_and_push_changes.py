@@ -16,7 +16,7 @@ async def commit_and_push_changes(repo: RepoState) -> None:
         g.git.push("--set-upstream", "origin", repo.branch)
         repo.modification_state = ModificationState.PUSHED_TO_REMOTE.value
     else:
-        repo.modification_state = ModificationState.MODIFIED.value
+        repo.modification_state = ModificationState.NO_FILES_CHANGED.value
 
 
 def print_modified_repositories(repos: dict[str, RepoState]):

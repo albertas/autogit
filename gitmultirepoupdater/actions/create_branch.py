@@ -11,7 +11,8 @@ async def create_branch(repo: RepoState):
     repo.branch = new_branch_name
 
     g = Git(repo.directory)
-    g.execute(["git", "checkout", "-B", repo.branch])
+    g.execute(["git", "checkout", "-b", repo.branch])
+    g.execute(["git", "pull", "origin", repo.branch])
 
 
 def create_branch_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
