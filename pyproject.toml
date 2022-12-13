@@ -1,6 +1,6 @@
 [project]
 name = "git-multi-repo-updater"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     {name = "Albertas Gimbutas", email = "albertasgim@gmail.com"},
 ]
