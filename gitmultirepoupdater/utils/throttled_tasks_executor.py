@@ -25,7 +25,7 @@ class ThrottledTasksExecutor:
         self.loop = asyncio.new_event_loop()
         self.running_tasks = set()  # TODO: Find the example with task removal from the set.
                                     # TODO: Would be nice to have awaitable future, instead of infinite loop.
-        self.delay_between_tasks = 1
+        self.delay_between_tasks = delay_between_tasks
         self.in_separate_process = in_separate_process
 
         self.can_task_be_executed = asyncio.Condition(loop=self.loop)
@@ -111,7 +111,7 @@ class ThrottledTasksExecutor:
         while self.is_running:
             # Does the first task has to wait `every` seconds to be started?
             async with self.can_task_be_executed:
-                if count and count > 1:
+                if count and count > 0:
                     self.can_task_be_executed.notify(n=count)
                 else:
                     self.can_task_be_executed.notify_all()
