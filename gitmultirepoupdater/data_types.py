@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from gitmultirepoupdater.constants import CloningStates
+from gitmultirepoupdater.constants import CloningStates, PullRequestStates
 
 
 @dataclass
@@ -18,7 +18,16 @@ class RepoState:
     branch: str = ""  # Branch name in which changes will be made and commited
     target_branch: str = ""  # Base branch into which PR changes will be pulled into
     cloning_state: str = CloningStates.NOT_STARTED.value
+    pull_request_state: str = PullRequestStates.NOT_CREATED.value
     name: str = ""  # Short human readable repo identifier
     url: str = ""  # Url used to clone the repository
     directory: str = ""  # Repository path in the file system
     owner: str = ""  # Owner of this repo
+    domain: str = ""  # Domain where the remote repository is hosted at
+
+
+@dataclass
+class HttpRequestParams:
+    url: str
+    headers: dict[str, str]
+    data: dict[str, str]
