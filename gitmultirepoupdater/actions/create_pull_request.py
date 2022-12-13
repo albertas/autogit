@@ -48,6 +48,15 @@ def get_http_request_params_for_pull_request_creation(repo: RepoState) -> HttpRe
     )
 
 
+def print_pull_requests(repos):
+    print()
+    print("\033[1;34m|" + "Created Pull Requests".center(77, "-") + "|\033[0m")
+    for repo in repos.values():
+        if repo.pull_request_state == PullRequestStates.CREATED.value:
+            print(f"\033[1;34m|\033[0m - {repo.pull_request_url.ljust(73, ' ')} \033[1;34m|\033[0m")
+    print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
+
+
 async def create_pull_request(repo: RepoState):
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
     request_params = get_http_request_params_for_pull_request_creation(repo)
@@ -60,9 +69,13 @@ async def create_pull_request(repo: RepoState):
         )
         if response.status_code < 400:
             repo.pull_request_state = PullRequestStates.CREATED.value
+            repo.pull_request_url = response.json().get("web_url", response.json().get("url"))
+        else:
+            repo.pull_request_state = PullRequestStates.GOT_BAD_RESPONSE.value
 
 
 def create_pull_request_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
     for repo in repos.values():
         executor.run(create_pull_request(repo))
     executor.wait_for_tasks_to_finish()
+    print_pull_requests(repos)

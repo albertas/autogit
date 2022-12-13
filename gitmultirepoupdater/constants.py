@@ -19,4 +19,13 @@ class CloningStates(Enum):
 class PullRequestStates(Enum):
     NOT_CREATED = "NOT_CREATED"
     CREATED = "CREATED"
+    GOT_BAD_RESPONSE = "GOT_BAD_RESPONSE"
     MERGED = "MERGED"
+
+
+class ModificationState(Enum):
+    NOT_STARTED = "NOT_STARTED"
+    GOT_EXCEPTION = "GOT_EXCEPTION"
+    MODIFIED = "MODIFIED"
+    NO_FILES_CHANGED = "NO_FILES_CHANGED"
+    PUSHED_TO_REMOTE = "PUSHED_TO_REMOTE"

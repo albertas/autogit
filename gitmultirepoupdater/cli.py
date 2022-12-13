@@ -13,7 +13,7 @@ def main(args: Optional[list[str]] = None) -> None:
     cli_args = parse_command_line_arguments(args)
     repos = get_repository_states(cli_args)
 
-    with ThrottledTasksExecutor(delay_between_tasks=0.2) as executor:
+    with ThrottledTasksExecutor(delay_between_tasks=0.1) as executor:
         clone_repositories(repos, executor)
         create_branch_for_each_repo(repos, executor)
         run_command_for_each_repo(repos, executor)

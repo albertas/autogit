@@ -9,8 +9,9 @@ or [GitHub](https://github.com/settings/tokens)
 and set it as environment variable:
 
 ```bash
-export GITLAB_OAUTH_TOKEN=<token>
+export GITLAB_ACCESS_TOKEN=<token>
 export GITHUB_OAUTH_TOKEN=<token>
+export GIT_TOKEN=<token>  # This one is used if previous ones are not found
 ```
 
 Provide a list of repositories and a script or a command to run inside each of them:

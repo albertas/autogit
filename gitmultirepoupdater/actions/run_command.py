@@ -3,6 +3,7 @@ import subprocess
 
 from gitmultirepoupdater.data_types import RepoState
 from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from gitmultirepoupdater.data_types import ModificationState, CloningStates
 
 
 async def run_command(repo: RepoState) -> None:
@@ -20,7 +21,11 @@ async def run_command(repo: RepoState) -> None:
         stdout=subprocess.PIPE,
     )
     # TODO: Show output in real time:  https://stackoverflow.com/a/20576150
-    stdout, stderr = proc.communicate()
+    repo.stdout, repo.stderr = proc.communicate()
+    if proc.returncode:
+        repo.modification_state = ModificationState.GOT_EXCEPTION.value
+    else:
+        repo.modification_state = ModificationState.MODIFIED.value
 
 
 def run_command_for_each_repo(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
