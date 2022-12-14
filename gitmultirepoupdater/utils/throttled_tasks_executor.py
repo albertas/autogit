@@ -1,6 +1,7 @@
 import asyncio
 from typing import Callable, Coroutine, Optional, Union
 from threading import Thread
+import traceback
 
 
 class ThrottledTasksExecutor:
@@ -127,11 +128,20 @@ class ThrottledTasksExecutor:
 
     def _mark_task_done(self, callback):
         """Decorator for callback to set the task as done after the callback is processed."""
-        def task_done_wrapper(task):
-            task_result = task.result()
-            callback_result = callback(task_result)
+        def task_done_wrapper(task: Coroutine) -> None:
+            try:
+                task_result = task.result()  # type: ignore
+            except Exception as e:
+                print("Got an exception during coroutine execution: {e}")
+                traceback.print_exc()
+            else:
+                try:
+                    callback(task_result)
+                except Exception as e:
+                    print("Got an exception during callback execution: {e}")
+                    traceback.print_exc()
             self.running_tasks.discard(task)
-            return callback_result
+            return None
         return task_done_wrapper
 
     def _run_event_loop(self):
