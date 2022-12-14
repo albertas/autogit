@@ -2,24 +2,26 @@ import asyncio
 from typing import Callable, Coroutine, Optional, Union
 from threading import Thread
 import traceback
+from sys import version_info
 
 
 class ThrottledTasksExecutor:
     """Executor which allows to run coroutines without hitting throttling limits.
 
     Usage example:
-        async def task(name: str) -> str:
-            print(f"Started greeting generation for {name}")
+        async def generate_greeting(name: str) -> str:
+            from datetime import datetime
+            print(f"Started greeting generation for {name} at {datetime.now()}")
             await asyncio.sleep(1)
-            print("Done greeting generation for {name}")
+            print(f"Done greeting generation for {name} at {datetime.now()}")
             return f"Hello, {name}!"
 
         def process_result(greeting: str) -> None:
-            print("See what we got: {greeting}")
+            print(f"This result was generated: {greeting}")
 
-        with ThrottledTasksExecutor(delay_between_tasks=0.2) as executor:
-            executor.run(generate_greeting("World"), callback=process_response)
-            executor.run(generate_greeting("Universe"), callback=process_response)
+        with ThrottledTasksExecutor(delay_between_tasks=2) as executor:
+            executor.run(generate_greeting("World"), callback=process_result)
+            executor.run(generate_greeting("Universe"), callback=process_result)
     """
 
     def __init__(self, delay_between_tasks: float = 0.2, in_separate_process: bool = False):
@@ -29,7 +31,10 @@ class ThrottledTasksExecutor:
         self.delay_between_tasks = delay_between_tasks
         self.in_separate_process = in_separate_process
 
-        self.can_task_be_executed = asyncio.Condition(loop=self.loop)
+        if version_info.major == 3 and version_info.minor >= 10:
+            self.can_task_be_executed = asyncio.Condition()
+        else:
+            self.can_task_be_executed = asyncio.Condition(loop=self.loop)
         self.is_running = False
 
     def __enter__(self) -> "ThrottledTasksExecutor":
@@ -57,11 +62,14 @@ class ThrottledTasksExecutor:
         self.is_running = True
 
         # Periodically emit permission to execute one task
-        asyncio.run_coroutine_threadsafe(self._allow_task_execution(every=self.delay_between_tasks), self.loop)
+        self._allow_task_execution_task = asyncio.run_coroutine_threadsafe(
+            self._allow_task_execution(every=self.delay_between_tasks),
+            self.loop
+        )
 
     def stop(self):
         """Terminates a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor"""
-
+        self._allow_task_execution_task.cancel()
         self.loop.stop()
         self.is_running = False
 
@@ -109,14 +117,17 @@ class ThrottledTasksExecutor:
             every: float  - seconds how often a permission is given to `count` tasks to be executed.
             count: int    - how many tasks are allowed to be run at each event.
         """
-        while self.is_running:
-            # Does the first task has to wait `every` seconds to be started?
-            async with self.can_task_be_executed:
-                if count and count > 0:
-                    self.can_task_be_executed.notify(n=count)
-                else:
-                    self.can_task_be_executed.notify_all()
-            await asyncio.sleep(every)
+        try:
+            while self.is_running:
+                # Does the first task has to wait `every` seconds to be started?
+                async with self.can_task_be_executed:
+                    if count and count > 0:
+                        self.can_task_be_executed.notify(n=count)
+                    else:
+                        self.can_task_be_executed.notify_all()
+                await asyncio.sleep(every)
+        except asyncio.CancelledError:
+            pass
 
     def _throttled_task(self, coroutine: Coroutine) -> Coroutine:
         """Decorator for coroutine to wait for permission before executing the coroutine."""
