@@ -5,12 +5,13 @@ from gitmultirepoupdater.constants import CloningStates, PullRequestStates, Modi
 
 @dataclass
 class CliArguments:
-    repos: List[str]
-    clone_to: str
-    commands: List[str]
-    commit_message: str
-    verbose: bool
-    branch: Optional[str]
+    action_id: str  # Generated hash for action identification
+    repos: List[str]  # A list of Urls or files containing Urls
+    clone_to: str  # Directory which will be used to clone repos to
+    commands: List[str]  # Commands which have to be exeucted in cloned repo
+    commit_message: str  # Message which will be used for commit, branch, PR (if not provided)
+    verbose: bool  # Provides additional debug information
+    branch: Optional[str]  # Branch name for newly created changes
 
 
 @dataclass

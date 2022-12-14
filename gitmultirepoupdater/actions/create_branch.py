@@ -3,7 +3,7 @@ import git
 from git.cmd import Git
 
 from gitmultirepoupdater.data_types import RepoState
-from gitmultirepoupdater.utils.helpers import to_kebab_case, get_random_hex
+from gitmultirepoupdater.utils.helpers import to_kebab_case
 from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
@@ -11,7 +11,7 @@ async def create_branch(repo: RepoState):
     if repo.args.branch:
         new_branch_name = repo.args.branch
     else:
-        new_branch_name = f"{to_kebab_case(repo.args.commit_message)}-{get_random_hex()}"
+        new_branch_name = f"{to_kebab_case(repo.args.commit_message)}-{repo.args.action_id}"
     repo.branch = new_branch_name
 
     g = Git(repo.directory)

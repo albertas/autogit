@@ -8,6 +8,8 @@ from gitmultirepoupdater.utils.helpers import get_random_hex
 
 
 def get_argument_parser():
+    action_id = get_random_hex()
+
     parser = argparse.ArgumentParser(
         description="Update multiple GitLab or GitHub repositories with a single command.",
         epilog="""Report bugs and request features at https://github.com/albertas/git-multi-repo-updater/issues""",
@@ -23,7 +25,7 @@ def get_argument_parser():
 
     parser.add_argument(
         "-m", "--message", "--commit-message", action="store", dest="commit_message",
-        default=f"Git multi repo updater action #{get_random_hex()}", type=str, nargs="?",
+        default=f"Git multi repo updater action #{action_id}", type=str, nargs="?",
         help="Message which will be used for commit message (and for branch name, PR title if they are not specified)")
 
     parser.add_argument(
@@ -46,6 +48,10 @@ def get_argument_parser():
     parser.add_argument(
         "commands", type=str, nargs="*",
         help="Commands or scripts to execute in local Git repository")
+
+    parser.add_argument(
+        "--action-id", action="store_const", dest="action_id", const=action_id,
+        help="Unique hex for action identification")
 
     return parser
 
