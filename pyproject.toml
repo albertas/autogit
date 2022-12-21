@@ -32,6 +32,7 @@ disable = true
 
 [project.scripts]
 git-multi-repo-updater = "gitmultirepoupdater.cli:main"
+gitu = "gitmultirepoupdater.cli:main"
 
 [tool.mypy]
 exclude = ["build", "dist", "venv"]
