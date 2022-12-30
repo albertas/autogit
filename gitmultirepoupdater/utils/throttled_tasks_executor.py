@@ -34,7 +34,7 @@ class ThrottledTasksExecutor:
         if version_info.major == 3 and version_info.minor >= 10:
             self.can_task_be_executed = asyncio.Condition()
         else:
-            self.can_task_be_executed = asyncio.Condition(loop=self.loop)
+            self.can_task_be_executed = asyncio.Condition(loop=self.loop)  # type: ignore
         self.is_running = False
 
     def __enter__(self) -> "ThrottledTasksExecutor":
@@ -70,6 +70,10 @@ class ThrottledTasksExecutor:
     def stop(self):
         """Terminates a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor"""
         self._allow_task_execution_task.cancel()
+
+        # Ensures that the _allow_task_execution_task is being fully cancelled https://stackoverflow.com/a/62443715
+        self.loop._run_once()  # type: ignore
+
         self.loop.stop()
         self.is_running = False
 
