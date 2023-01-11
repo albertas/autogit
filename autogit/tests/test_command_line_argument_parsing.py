@@ -1,7 +1,7 @@
 from unittest import TestCase
 import logging
 
-from gitmultirepoupdater.cli import parse_command_line_arguments
+from autogit.cli import parse_command_line_arguments
 
 
 class CommandLineArgumentParsingTests(TestCase):

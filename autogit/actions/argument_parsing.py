@@ -2,9 +2,9 @@ import argparse
 import logging
 import sys
 from typing import List, Optional
-from gitmultirepoupdater.data_types import CliArguments
+from autogit.data_types import CliArguments
 
-from gitmultirepoupdater.utils.helpers import get_random_hex
+from autogit.utils.helpers import get_random_hex
 
 
 def get_argument_parser():
@@ -12,7 +12,7 @@ def get_argument_parser():
 
     parser = argparse.ArgumentParser(
         description="Update multiple GitLab or GitHub repositories with a single command.",
-        epilog="""Report bugs and request features at https://github.com/albertas/git-multi-repo-updater/issues""",
+        epilog="""Report bugs and request features at https://github.com/albertas/auto-git/issues""",
         add_help=False)
 
     parser.add_argument(
@@ -25,7 +25,7 @@ def get_argument_parser():
 
     parser.add_argument(
         "-m", "--message", "--commit-message", action="store", dest="commit_message",
-        default=f"Git multi repo updater action #{action_id}", type=str, nargs="?",
+        default=f"Auto Git action #{action_id}", type=str, nargs="?",
         help="Message which will be used for commit message (and for branch name, PR title if they are not specified)")
 
     parser.add_argument(

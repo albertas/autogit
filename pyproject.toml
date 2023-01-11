@@ -1,10 +1,10 @@
 [project]
-name = "git-multi-repo-updater"
-version = "0.1.3"
+name = "auto-git"
+version = "0.0.1"
 authors = [
     {name = "Albertas Gimbutas", email = "albertasgim@gmail.com"},
 ]
-description = "git-multi-repo-updater is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
+description = "auto-git is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
 readme = "README.md"
 requires-python = ">= 3.8"
 classifiers = [
@@ -31,8 +31,8 @@ build-backend = "hatchling.build"
 disable = true
 
 [project.scripts]
-git-multi-repo-updater = "gitmultirepoupdater.cli:main"
-gitu = "gitmultirepoupdater.cli:main"
+auto-git = "autogit.cli:main"
+autogit = "autogit.cli:main"
 
 [tool.mypy]
 exclude = ["build", "dist", "venv"]

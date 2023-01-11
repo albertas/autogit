@@ -2,9 +2,9 @@ import os
 import subprocess
 from typing import Dict
 
-from gitmultirepoupdater.data_types import RepoState
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
-from gitmultirepoupdater.data_types import ModificationState
+from autogit.data_types import RepoState
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.data_types import ModificationState
 
 
 async def run_command(repo: RepoState) -> None:

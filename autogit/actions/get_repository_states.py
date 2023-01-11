@@ -4,8 +4,8 @@ import os
 import os.path
 from typing import Dict, List
 
-from gitmultirepoupdater.data_types import CliArguments, RepoState
-from gitmultirepoupdater.utils.helpers import get_repo_name, get_repo_owner, get_domain, to_kebab_case
+from autogit.data_types import CliArguments, RepoState
+from autogit.utils.helpers import get_repo_name, get_repo_owner, get_domain, to_kebab_case
 
 logger = logging.getLogger()
 

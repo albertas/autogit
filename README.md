@@ -1,4 +1,4 @@
-`git-multi-repo-updater` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
+`auto-git` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
 
 ## Usage
 Generate an access token at [GitLab](https://gitlab.com/-/profile/personal_access_tokens)
@@ -14,7 +14,7 @@ export GIT_TOKEN=<token>  # This one is used if previous ones are not found
 Provide a list of repositories and a script or a command to run inside each of them:
 
 ```bash
-./git-multi-repo-updater --repos repos.txt update_repo.py
+auto-git --repos repos.txt update_repo.py
 ```
 
 Where `repos.txt` could be:
@@ -27,7 +27,7 @@ https://github.com/<handle>/<repo-title>
 Try it yourself:
 
 ```bash
-./git-multi-repo-updater \
+auto-git \
   --repo https://github.com/<handle>/<repo-title> \
   --branch-name add-hello-world-file \
   --commit-message "Add hello-world.txt file" \
@@ -54,11 +54,20 @@ These options could be used to specify more details:
 | `--repo`           | Link to repository | String | No |
 | `--repos`          | Filename which contains a list of repository links | String | No |
 
+More examples:
+
+```bash
+auto-git --repos repos.txt ./examples/update_mypy_version.py
+```
+
 ## Efficiency
-`git-multi-repo-updater` is implemented in Python and uses coroutines to make multiple parallel API calls. Delays are being made after each API call in order not to get throttled.
+`auto-git` is implemented in Python and uses coroutines to make multiple parallel API calls. Delays are being made after each API call in order not to get throttled.
 
 ## Roadmap
-- [ ] Make API calls to GitHub
+- [ ] Add unit tests for all the paths (mock gitpython, httpx requests)
+    - [ ] Implement state change dependencies on the tests.
+    - [ ] Implement RecorderMock for packages.
+
 - [ ] Package and release to PyPi
 - [ ] Run command as command line tool
     - [ ] Stand-alone executable file download in Github releases.

@@ -3,11 +3,11 @@ from logging import getLogger
 from typing import Dict
 
 import httpx
-from gitmultirepoupdater.constants import PullRequestStates
+from autogit.constants import PullRequestStates
 
-from gitmultirepoupdater.data_types import RepoState, HttpRequestParams
-from gitmultirepoupdater.utils.helpers import get_access_token
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.data_types import RepoState, HttpRequestParams
+from autogit.utils.helpers import get_access_token
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 logger = getLogger()
 

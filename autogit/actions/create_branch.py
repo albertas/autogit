@@ -2,9 +2,9 @@ from typing import Dict
 import git
 from git.cmd import Git
 
-from gitmultirepoupdater.data_types import RepoState
-from gitmultirepoupdater.utils.helpers import to_kebab_case
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.data_types import RepoState
+from autogit.utils.helpers import to_kebab_case
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
 async def create_branch(repo: RepoState):

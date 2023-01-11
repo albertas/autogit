@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from gitmultirepoupdater.cli import main
+from autogit.cli import main
 
 
 # class CommandLineArgumentParsingTests(TestCase):

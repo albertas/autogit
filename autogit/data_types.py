@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional
-from gitmultirepoupdater.constants import CloningStates, PullRequestStates, ModificationState
+
+from autogit.constants import CloningStates, PullRequestStates, ModificationState
 
 
 @dataclass

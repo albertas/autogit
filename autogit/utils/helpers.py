@@ -6,8 +6,8 @@ from string import ascii_letters, digits
 
 from git.cmd import Git
 
-from gitmultirepoupdater.constants import ACCESS_TOKEN_VAR_NAMES
-from gitmultirepoupdater.data_types import RepoState
+from autogit.constants import ACCESS_TOKEN_VAR_NAMES
+from autogit.data_types import RepoState
 
 
 def flatten_list(list_of_lists: Optional[List[List[str]]]) -> List[str]:

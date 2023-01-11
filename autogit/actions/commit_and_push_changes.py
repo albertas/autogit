@@ -1,10 +1,10 @@
 from typing import Dict
 import git
 from logging import getLogger
-from gitmultirepoupdater.constants import ModificationState
+from autogit.constants import ModificationState
 
-from gitmultirepoupdater.data_types import RepoState
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.data_types import RepoState
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
 async def commit_and_push_changes(repo: RepoState) -> None:

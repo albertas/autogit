@@ -1,7 +1,7 @@
 import asyncio
 from unittest import TestCase
 
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
 class ThrottledTasksExecutorTests(TestCase):

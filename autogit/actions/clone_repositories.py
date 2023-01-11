@@ -5,10 +5,10 @@ from urllib.parse import urlparse
 import git
 from git.cmd import Git
 
-from gitmultirepoupdater.data_types import RepoState
-from gitmultirepoupdater.constants import CloningStates
-from gitmultirepoupdater.utils.throttled_tasks_executor import ThrottledTasksExecutor
-from gitmultirepoupdater.utils.helpers import get_access_token, get_default_branch
+from autogit.data_types import RepoState
+from autogit.constants import CloningStates
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.utils.helpers import get_access_token, get_default_branch
 
 
 def get_repo_access_url(url: str) -> Optional[str]:
