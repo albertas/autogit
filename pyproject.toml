@@ -1,10 +1,10 @@
 [project]
-name = "auto-git"
+name = "autogit"
 version = "0.0.1"
 authors = [
     {name = "Albertas Gimbutas", email = "albertasgim@gmail.com"},
 ]
-description = "auto-git is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
+description = "autogit is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
 readme = "README.md"
 requires-python = ">= 3.8"
 classifiers = [
@@ -31,7 +31,6 @@ build-backend = "hatchling.build"
 disable = true
 
 [project.scripts]
-auto-git = "autogit.cli:main"
 autogit = "autogit.cli:main"
 
 [tool.mypy]

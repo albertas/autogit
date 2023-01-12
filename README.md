@@ -1,4 +1,4 @@
-`auto-git` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
+`autogit` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
 
 ## Usage
 Generate an access token at [GitLab](https://gitlab.com/-/profile/personal_access_tokens)
@@ -14,7 +14,7 @@ export GIT_TOKEN=<token>  # This one is used if previous ones are not found
 Provide a list of repositories and a script or a command to run inside each of them:
 
 ```bash
-auto-git --repos repos.txt update_repo.py
+autogit --repos repos.txt update_repo.py
 ```
 
 Where `repos.txt` could be:
@@ -27,7 +27,7 @@ https://github.com/<handle>/<repo-title>
 Try it yourself:
 
 ```bash
-auto-git \
+autogit \
   --repo https://github.com/<handle>/<repo-title> \
   --branch-name add-hello-world-file \
   --commit-message "Add hello-world.txt file" \
@@ -57,11 +57,11 @@ These options could be used to specify more details:
 More examples:
 
 ```bash
-auto-git --repos repos.txt ./examples/update_mypy_version.py
+autogit --repos repos.txt ./examples/update_mypy_version.py
 ```
 
 ## Efficiency
-`auto-git` is implemented in Python and uses coroutines to make multiple parallel API calls. Delays are being made after each API call in order not to get throttled.
+`autogit` is implemented in Python and uses coroutines to make multiple parallel API calls. Delays are being made after each API call in order not to get throttled.
 
 ## Roadmap
 - [ ] Add unit tests for all the paths (mock gitpython, httpx requests)

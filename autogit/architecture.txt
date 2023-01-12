@@ -22,9 +22,9 @@ If stopped - user initiates next step.
 
 
 
-This tool will mainly run as a command line tool `auto-git`,
+This tool will mainly run as a command line tool `autogit`,
 but it also will have a GUI application implemented with tkinter,
-which could be started using `auto-git-gui` command.
+which could be started using `autogit-gui` command.
 [Decision] The GUI will be implemented using `curses` instead of tkinter or Kivy.
 > There wont be a distinction between commandline and GUI interfaces, they both will work using curses inside the terminal.
 
