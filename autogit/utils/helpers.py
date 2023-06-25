@@ -1,6 +1,5 @@
 import os
 from urllib.parse import urlparse
-from typing import List, Optional
 from random import randint
 from string import ascii_letters, digits
 
@@ -10,20 +9,10 @@ from autogit.constants import ACCESS_TOKEN_VAR_NAMES
 from autogit.data_types import RepoState
 
 
-def flatten_list(list_of_lists: Optional[List[List[str]]]) -> List[str]:
-    """Concatenates lists into one list."""
-    if not list_of_lists:
-        return []
-    return [elem for elem_list in list_of_lists for elem in elem_list]
-
-
 def remove_suffix(value: str, suffix: str, case_insensitive: bool = True) -> str:
     """Removes suffix from a given string `value` case_insensitive by default."""
-    if (
-        value.endswith(suffix)
-        or (case_insensitive and value.lower().endswith(suffix.lower()))
-    ):
-        return value[:-len(suffix)]
+    if value.endswith(suffix) or (case_insensitive and value.lower().endswith(suffix.lower())):
+        return value[: -len(suffix)]
     return value
 
 
@@ -36,7 +25,7 @@ def to_kebab_case(value: str) -> str:
     """Converts provided text `value` to a kebab-case name with max length of 100 for a branch name."""
     allowed_chars = ascii_letters + digits + " -/"
     value = value.replace(".", " ").replace(",", " ").replace("\\", " ").replace(":", " ").replace(";", " ")
-    ascii_value = "".join([l for l in value if l in allowed_chars])
+    ascii_value = "".join([char for char in value if char in allowed_chars])
     return "-".join(ascii_value.lower().split())[:100]
 
 

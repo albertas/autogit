@@ -17,7 +17,7 @@ class CliArguments:
 
 @dataclass
 class RepoState:
-    args: CliArguments  # Parsed command line arguments 
+    args: CliArguments  # Parsed command line arguments
 
     source_branch: str = ""  # Branch name from which a new branch for changes will be created
     branch: str = ""  # Branch name in which changes will be made and commited
@@ -36,8 +36,8 @@ class RepoState:
     pull_request_url: str = ""  # Link to created pull request
     directory: str = ""  # Repository path in the file system
 
-    stdout: str = ""  # Standard output from command execution
-    stderr: str = ""  # Standard error output from command execution
+    stdout: bytes = b""  # Standard output from command execution
+    stderr: bytes = b""  # Standard error output from command execution
 
 
 @dataclass

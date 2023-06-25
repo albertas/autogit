@@ -5,7 +5,12 @@ import os.path
 from typing import Dict, List
 
 from autogit.data_types import CliArguments, RepoState
-from autogit.utils.helpers import get_repo_name, get_repo_owner, get_domain, to_kebab_case
+from autogit.utils.helpers import (
+    get_repo_name,
+    get_repo_owner,
+    get_domain,
+    to_kebab_case,
+)
 
 logger = logging.getLogger()
 
@@ -18,7 +23,7 @@ def is_url_or_git(file_names_or_repo_url: str) -> bool:
 def read_repositories_from_file(repos_filename) -> List[str]:
     """Reads a list of repositories from a file while ignoring commented out lines."""
     with open(repos_filename) as f:
-        return [l.strip() for l in f.readlines() if not l.strip().startswith("#")]
+        return [line.strip() for line in f.readlines() if not line.strip().startswith("#")]
 
 
 def get_repository_states(args: CliArguments) -> Dict[str, RepoState]:
@@ -29,7 +34,6 @@ def get_repository_states(args: CliArguments) -> Dict[str, RepoState]:
             repo_urls.extend(newly_read_repos)
         else:
             repo_urls.append(file_names_or_repo_url)
-
 
     branch = args.branch or to_kebab_case(args.commit_message)
 

@@ -1,5 +1,4 @@
 from typing import Dict
-import git
 from git.cmd import Git
 
 from autogit.data_types import RepoState

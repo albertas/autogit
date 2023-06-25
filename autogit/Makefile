@@ -1,10 +1,26 @@
-flake8:
-	../venv/bin/flake8 .
+check: test ruff mypy black deadcode
 
-mypy:
-	../venv/bin/mypy .
+../venv:
+	cd .. && make venv
 
-test:
+publish: ../venv
+	cd .. && make publish
+
+test: ../venv
 	../venv/bin/pytest $(PYTEST_ME_PLEASE)
 
-check: test flake8 mypy
+ruff: ../venv
+	../venv/bin/ruff .
+
+fix: ../venv
+	../venv/bin/black .
+	../venv/bin/ruff . --fix
+
+mypy: ../venv
+	../venv/bin/mypy .
+
+black: ../venv
+	../venv/bin/black .
+
+deadcode: ../venv
+	../venv/bin/deadcode . --exclude=tests

@@ -4,7 +4,9 @@ from autogit.actions.get_repository_states import get_repository_states
 from autogit.actions.clone_repositories import clone_repositories
 from autogit.actions.create_branch import create_branch_for_each_repo
 from autogit.actions.run_command import run_command_for_each_repo
-from autogit.actions.commit_and_push_changes import commit_and_push_changes_for_each_repo 
+from autogit.actions.commit_and_push_changes import (
+    commit_and_push_changes_for_each_repo,
+)
 from autogit.actions.create_pull_request import create_pull_request_for_each_repo
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 

@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 import git
 from git.cmd import Git
+from git.exc import GitCommandError
 
 from autogit.data_types import RepoState
 from autogit.constants import CloningStates
@@ -56,7 +57,7 @@ async def clone_repository(repo: RepoState) -> None:
 
         repo.target_branch = repo.target_branch or get_default_branch(repo)
 
-    except git.exc.GitCommandError:
+    except GitCommandError:
         repo.cloning_state = CloningStates.NOT_FOUND.value
 
 
@@ -73,7 +74,8 @@ def print_cloned_repositories(repos):
         print("\033[1;34m|\033[0m" + "Did NOT clone these repositories:".center(77, "-") + "\033[1;34m|\033[0m")
         for repo in repos.values():
             if repo.cloning_state != repo.cloning_state:
-                print(f"\033[1;34m|\033[0m - {(repo.url + ' ' + CloningStates.CLONED.value).ljust(73, ' ')} \033[1;34m|\033[0m")
+                repo_url = (repo.url + " " + CloningStates.CLONED.value).ljust(73, " ")
+                print(f"\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m")
     print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
 
 

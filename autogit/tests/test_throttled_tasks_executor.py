@@ -19,8 +19,7 @@ class ThrottledTasksExecutorTests(TestCase):
             executor.run(self.generate_greeting("World"), callback=process_result)
             executor.run(self.generate_greeting("Universe"), callback=process_result)
 
-        self.assertListEqual(generated_greetings,
-                             ["Hello, World!", "Hello, Universe!"])
+        self.assertListEqual(generated_greetings, ["Hello, World!", "Hello, Universe!"])
 
     def test_not_throttled_task_execution(self):
         generated_greetings = []

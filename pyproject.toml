@@ -33,25 +33,32 @@ disable = true
 [project.scripts]
 autogit = "autogit.cli:main"
 
+[tool.ruff]  # https://beta.ruff.rs/docs/settings/
+line-length = 120
+
+
 [tool.mypy]
 exclude = ["build", "dist", "venv"]
 python_version = "3.8"
+strict = true
 pretty = true
 color_output = true
 show_error_codes = true
 warn_return_any = true
 warn_unused_configs = true
 
+
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+known_third_party = ["deadcode"]
 
-# https://github.com/PyCQA/flake8/issues/234
-# [tool.flake8]
-# inline-quotes = "double"
-# exclude = ["venv"]
-# max-line-length = 120
-# max-complexity = 10
-# max-function-length= 120
-# import-order-style = "google"
-# ignore = "I101,"
+
+[tool.black]
+max_line_length = 120
+line_length = 120
+target_version = ["py38"]
+
+
+[tool.pytest.ini_options]
+addopts = "--cov=. --cov-fail-under=62.0"

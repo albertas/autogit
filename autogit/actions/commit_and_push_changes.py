@@ -1,6 +1,5 @@
 from typing import Dict
 import git
-from logging import getLogger
 from autogit.constants import ModificationState
 
 from autogit.data_types import RepoState
@@ -37,13 +36,18 @@ def print_modified_repositories(repos: Dict[str, RepoState]):
         print("\033[1;34m|\033[0m" + "Did NOT modify these repositories:".center(77, "-") + "\033[1;34m|\033[0m")
         for repo in repos.values():
             if repo.cloning_state != ModificationState.PUSHED_TO_REMOTE.value:
-                print(f"\033[1;34m|\033[0m - {(repo.url + ' ' + repo.modification_state).ljust(73, ' ')} \033[1;34m|\033[0m")
+                repo_url = (repo.url + " " + repo.modification_state).ljust(73, " ")
+                print(f"\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m")
 
     if print_repo_exceptions:
         print("\033[1;34m|\033[0m" + "Exceptions:".center(77, "-") + "\033[1;34m|\033[0m")
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
-                print("\033[1;34m|\033[0m" + f" - {(repo.url + ' ' + repo.modification_state).ljust(73, ' ')}:" + "\033[1;34m|\033[0m")
+                print(
+                    "\033[1;34m|\033[0m"
+                    + f" - {(repo.url + ' ' + repo.modification_state).ljust(73, ' ')}:"
+                    + "\033[1;34m|\033[0m"
+                )
                 print(repo.stderr)
 
     print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
