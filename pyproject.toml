@@ -6,17 +6,16 @@ authors = [
 ]
 description = "autogit is a command line tool for updating multiple GitLab or GitHub repositories with a single command."
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.12"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: GNU Affero General Public License v3",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "GitPython >= 3.1.29",
@@ -39,7 +38,7 @@ line-length = 120
 
 [tool.mypy]
 exclude = ["build", "dist", "venv"]
-python_version = "3.8"
+python_version = "3.12"
 strict = true
 pretty = true
 color_output = true
@@ -57,7 +56,7 @@ known_third_party = ["deadcode"]
 [tool.black]
 max_line_length = 120
 line_length = 120
-target_version = ["py38"]
+target_version = ["py312"]
 
 
 [tool.pytest.ini_options]

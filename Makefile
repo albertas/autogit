@@ -9,7 +9,7 @@ check: venv
 	cd autogit && make check
 
 venv:
-	python3.8 -m venv venv
+	python3.12 -m venv venv
 	venv/bin/pip install --upgrade pip
 	venv/bin/pip install -r requirements-dev.txt --use-pep517
 	venv/bin/pip install -e .
