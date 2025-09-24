@@ -13,15 +13,18 @@ from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 def get_repo_access_url(url: str) -> str | None:
     """Converts repository url to url which is suitable for cloning."""
-    if access_token := get_access_token(url):
-        parsed_url = urlparse(url)
-        domain_with_access_token = (
-            f'api:{access_token}@{parsed_url.netloc.split("@")[-1]}'
-        )
-        parsed_url = parsed_url._replace(
-            netloc=domain_with_access_token, scheme='https'
-        )
-        return parsed_url.geturl()
+    if url.startswith("http"):
+        if access_token := get_access_token(url):
+            parsed_url = urlparse(url)
+            domain_with_access_token = (
+                f'api:{access_token}@{parsed_url.netloc.split("@")[-1]}'
+            )
+            parsed_url = parsed_url._replace(
+                netloc=domain_with_access_token, scheme='https'
+            )
+            return parsed_url.geturl()
+    elif url.startswith("git@"):
+        return url
     return None
 
 
