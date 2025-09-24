@@ -23,5 +23,5 @@ def main(args: Optional[List[str]] = None) -> None:
         create_pull_request_for_each_repo(repos, executor)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

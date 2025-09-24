@@ -24,9 +24,13 @@ class ThrottledTasksExecutor:
             executor.run(generate_greeting("Universe"), callback=process_result)
     """
 
-    def __init__(self, delay_between_tasks: float = 0.2, in_separate_process: bool = False):
+    def __init__(
+        self, delay_between_tasks: float = 0.2, in_separate_process: bool = False
+    ):
         self.loop = asyncio.new_event_loop()
-        self.running_tasks: Set[Any] = set()  # TODO: Find the example with task removal from the set.
+        self.running_tasks: Set[Any] = (
+            set()
+        )  # TODO: Find the example with task removal from the set.
         # TODO: Would be nice to have awaitable future, instead of infinite loop.
         self.delay_between_tasks = delay_between_tasks
         self.in_separate_process = in_separate_process
@@ -37,7 +41,7 @@ class ThrottledTasksExecutor:
             self.can_task_be_executed = asyncio.Condition(loop=self.loop)  # type: ignore
         self.is_running = False
 
-    def __enter__(self) -> "ThrottledTasksExecutor":
+    def __enter__(self) -> 'ThrottledTasksExecutor':
         self.start()
         return self
 
@@ -54,7 +58,9 @@ class ThrottledTasksExecutor:
         if in_separate_process:
             # TODO: investigate a way to start coroutines in a separate process:
             #   - https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.run_in_executor
-            raise NotImplementedError("Running executor in a separate process is not supported yet")
+            raise NotImplementedError(
+                'Running executor in a separate process is not supported yet'
+            )
         else:
             thread = Thread(target=self._run_event_loop, daemon=True)
             thread.start()
@@ -93,9 +99,11 @@ class ThrottledTasksExecutor:
         if not isinstance(coroutine, Coroutine):
             coroutine = coroutine(*args, **kwargs)
         if not isinstance(coroutine, Coroutine):
-            raise ValueError("Can only execute coroutines, not coroutine provided")
+            raise ValueError('Can only execute coroutines, not coroutine provided')
 
-        task = asyncio.run_coroutine_threadsafe(self._throttled_task(coroutine), self.loop)
+        task = asyncio.run_coroutine_threadsafe(
+            self._throttled_task(coroutine), self.loop
+        )
         self.running_tasks.add(task)
         task.add_done_callback(self._mark_task_done(callback))
 
@@ -116,7 +124,7 @@ class ThrottledTasksExecutor:
         if not isinstance(coroutine, Coroutine):
             coroutine = coroutine(*args, **kwargs)
         if not isinstance(coroutine, Coroutine):
-            raise ValueError("Can only execute coroutines, not coroutine provided")
+            raise ValueError('Can only execute coroutines, not coroutine provided')
 
         task = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
         self.running_tasks.add(task)
@@ -165,13 +173,13 @@ class ThrottledTasksExecutor:
             try:
                 task_result = task.result()  # type: ignore
             except Exception:
-                print("Got an exception during coroutine execution: {e}")
+                print('Got an exception during coroutine execution: {e}')
                 traceback.print_exc()
             else:
                 try:
                     callback(task_result)
                 except Exception:
-                    print("Got an exception during callback execution: {e}")
+                    print('Got an exception during callback execution: {e}')
                     traceback.print_exc()
             self.running_tasks.discard(task)
             return None

@@ -17,8 +17,12 @@ def get_repo_access_url(url: str) -> Optional[str]:
 
     if access_token := get_access_token(url):
         parsed_url = urlparse(url)
-        domain_with_access_token = f"api:{access_token}@{parsed_url.netloc.split('@')[-1]}"
-        parsed_url = parsed_url._replace(netloc=domain_with_access_token, scheme="https")
+        domain_with_access_token = (
+            f'api:{access_token}@{parsed_url.netloc.split("@")[-1]}'
+        )
+        parsed_url = parsed_url._replace(
+            netloc=domain_with_access_token, scheme='https'
+        )
         return parsed_url.geturl()
     return None
 
@@ -35,10 +39,12 @@ async def clone_repository(repo: RepoState) -> None:
     # TODO: add ssh support: urls like git@gitlab.com:niekas/gitlab-api-tests.git
 
     try:
-        if os.path.exists(repo.directory):  # If repository exists: clean it, pull changes, checkout default branch
+        if os.path.exists(
+            repo.directory
+        ):  # If repository exists: clean it, pull changes, checkout default branch
             g = Git(repo.directory)
-            g.clean("-dfx")
-            g.execute(["git", "fetch", "--all"])
+            g.clean('-dfx')
+            g.execute(['git', 'fetch', '--all'])
 
             default_branch = get_default_branch(repo)
             g.checkout(default_branch)
@@ -49,7 +55,7 @@ async def clone_repository(repo: RepoState) -> None:
                 git.Repo.clone_from(repo_access_url, repo.directory)
 
                 g = Git(repo.directory)
-                g.execute(["git", "fetch", "--all"])
+                g.execute(['git', 'fetch', '--all'])
 
                 repo.cloning_state = CloningStates.CLONED.value
             else:
@@ -63,23 +69,29 @@ async def clone_repository(repo: RepoState) -> None:
 
 def print_cloned_repositories(repos):
     print()
-    print("\033[1;34m|" + "Cloned repositories".center(77, "-") + "|\033[0m")
+    print('\033[1;34m|' + 'Cloned repositories'.center(77, '-') + '|\033[0m')
     should_print_not_cloned_repos = False
     for repo in repos.values():
         if repo.cloning_state == CloningStates.CLONED.value:
-            print(f"\033[1;34m|\033[0m - {repo.url.ljust(73, ' ')} \033[1;34m|\033[0m")
+            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
         else:
             should_print_not_cloned_repos = True
     if should_print_not_cloned_repos:
-        print("\033[1;34m|\033[0m" + "Did NOT clone these repositories:".center(77, "-") + "\033[1;34m|\033[0m")
+        print(
+            '\033[1;34m|\033[0m'
+            + 'Did NOT clone these repositories:'.center(77, '-')
+            + '\033[1;34m|\033[0m'
+        )
         for repo in repos.values():
             if repo.cloning_state != repo.cloning_state:
-                repo_url = (repo.url + " " + CloningStates.CLONED.value).ljust(73, " ")
-                print(f"\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m")
-    print("\033[1;34m|" + "".center(77, "-") + "|\033[0m")
+                repo_url = (repo.url + ' ' + CloningStates.CLONED.value).ljust(73, ' ')
+                print(f'\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m')
+    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
-def clone_repositories(repos: Dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+def clone_repositories(
+    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+) -> None:
     for repo in repos.values():
         executor.run(clone_repository(repo))
     executor.wait_for_tasks_to_finish()
