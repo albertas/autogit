@@ -1,0 +1,53 @@
+
+Show nice error message, when Access to Git repository is denied on write:
+
+stderr: 'remote: HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See https://gitlab.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied
+
+Traceback (most recent call last):
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/utils/throttled_tasks_executor.py", line 172, in task_done_wrapper
+    task_result = task.result()  # type: ignore
+                  ^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/actions/create_branch.py", line 19, in create_branch
+    g.execute(['git', 'pull', 'origin', repo.branch])
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/git/cmd.py", line 1406, in execute
+    raise GitCommandError(redacted_command, status, stderr_value, stdout_value)
+git.exc.GitCommandError: Cmd('git') failed due to: exit code(1)
+  cmdline: git pull origin auto-git-action-b68638bc-None
+  stderr: 'fatal: couldn't find remote ref auto-git-action-b68638bc-None'
+Traceback (most recent call last):
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/utils/throttled_tasks_executor.py", line 172, in task_done_wrapper
+    task_result = task.result()  # type: ignore
+                  ^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/utils/throttled_tasks_executor.py", line 163, in throttled_task_wrapper
+    return await coroutine
+           ^^^^^^^^^^^^^^^
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/actions/commit_and_push_changes.py", line 15, in commit_and_push_changes
+    g.git.push('--set-upstream', 'origin', repo.branch)
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/git/cmd.py", line 1003, in <lambda>
+    return lambda *args, **kwargs: self._call_process(name, *args, **kwargs)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/git/cmd.py", line 1616, in _call_process
+    return self.execute(call, **exec_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/git/cmd.py", line 1406, in execute
+    raise GitCommandError(redacted_command, status, stderr_value, stdout_value)
+git.exc.GitCommandError: Cmd('git') failed due to: exit code(128)
+  cmdline: git push --set-upstream origin auto-git-action-b68638bc-None
+  stderr: 'remote: HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See https://gitlab.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied
+fatal: Authentication failed for 'https://gitlab.com/niekas/jsonstate.git/''
+Exception in callback BaseSelectorEventLoop._read_from_self()
+handle: <Handle BaseSelectorEventLoop._read_from_self()>
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+RuntimeError: cannot enter context: <_contextvars.Context object at 0x7b1eb72e8b00> is already entered
