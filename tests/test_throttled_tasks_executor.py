@@ -1,10 +1,9 @@
 import asyncio
-from unittest import TestCase
 
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
-class ThrottledTasksExecutorTests(TestCase):
+class TestThrottledTasksExecutor:
     async def generate_greeting(self, name: str) -> str:
         await asyncio.sleep(0.1)
         return f'Hello, {name}!'
@@ -19,7 +18,7 @@ class ThrottledTasksExecutorTests(TestCase):
             executor.run(self.generate_greeting('World'), callback=process_result)
             executor.run(self.generate_greeting('Universe'), callback=process_result)
 
-        self.assertListEqual(generated_greetings, ['Hello, World!', 'Hello, Universe!'])
+        assert generated_greetings == ['Hello, World!', 'Hello, Universe!']
 
     def test_not_throttled_task_execution(self) -> None:
         generated_greetings = []
@@ -32,7 +31,7 @@ class ThrottledTasksExecutorTests(TestCase):
                 self.generate_greeting('World'), callback=process_result
             )
 
-        self.assertListEqual(generated_greetings, ['Hello, World!'])
+        assert generated_greetings == ['Hello, World!']
 
     def test_wait_for_tasks_to_finish(self) -> None:
         generated_greetings = []
@@ -50,4 +49,4 @@ class ThrottledTasksExecutorTests(TestCase):
         executor.stop()
 
         assert not executor.is_running
-        self.assertListEqual(generated_greetings, ['Hello, World!'])
+        assert generated_greetings == ['Hello, World!']

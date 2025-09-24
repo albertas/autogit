@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-class GithubApiTests(TestCase):
+class TestGithubApi(TestCase):
     def test_clone_github_repository(self) -> None:
         pass
 
