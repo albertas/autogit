@@ -18,7 +18,7 @@ def is_url_or_git(file_names_or_repo_url: str) -> bool:
     return '.com' in file_names_or_repo_url.lower()
 
 
-def read_repositories_from_file(repos_filename) -> list[str]:
+def read_repositories_from_file(repos_filename: str) -> list[str]:
     """Reads a list of repositories from a file while ignoring commented out lines."""
     with open(repos_filename) as f:
         return [line.strip() for line in f if not line.strip().startswith('#')]

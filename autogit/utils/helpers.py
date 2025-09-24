@@ -63,7 +63,7 @@ def get_repo_name(url: str) -> str:
     return remove_suffix(url.split('/')[-1], '.git')
 
 
-def get_default_branch(repo: RepoState):
+def get_default_branch(repo: RepoState) -> str:
     g = Git(repo.directory)
     default_branch_name: str = g.execute(
         ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD']

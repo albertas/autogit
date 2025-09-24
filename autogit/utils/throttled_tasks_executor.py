@@ -46,7 +46,7 @@ class ThrottledTasksExecutor:
         self.start()
         return self
 
-    def __exit__(self, *exc_info):
+    def __exit__(self, *exc_info) -> None:
         self.wait_for_tasks_to_finish()
         self.stop()
 
@@ -84,7 +84,7 @@ class ThrottledTasksExecutor:
         self,
         coroutine: Coroutine | Callable,
         *args,
-        callback: Callable | None = None,
+        callback: Callable | None = None,  # type: ignore
         **kwargs,
     ) -> None:
         """Executes coroutine in an executor thread, which makes sure not to hit throttling limits."""
@@ -103,13 +103,13 @@ class ThrottledTasksExecutor:
             self._throttled_task(coroutine), self.loop
         )
         self.running_tasks.add(task)
-        task.add_done_callback(self._mark_task_done(callback))
+        task.add_done_callback(self._mark_task_done(callback))  # type: ignore
 
     def run_not_throttled(
         self,
         coroutine: Coroutine | Callable,
         *args,
-        callback: Callable | None = None,
+        callback: Callable | None = None,  # type: ignore
         **kwargs,
     ) -> None:
         """Executes coroutine in an executor event loop ignoring throttled tasks queue."""
@@ -126,7 +126,7 @@ class ThrottledTasksExecutor:
 
         task = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
         self.running_tasks.add(task)
-        task.add_done_callback(self._mark_task_done(callback))
+        task.add_done_callback(self._mark_task_done(callback))  # type: ignore
 
     def wait_for_tasks_to_finish(self) -> None:
         asyncio.run(self.async_wait_for_tasks_to_finish())

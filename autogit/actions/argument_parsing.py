@@ -6,7 +6,7 @@ from autogit.data_types import CliArguments
 from autogit.utils.helpers import get_random_hex
 
 
-def get_argument_parser():
+def get_argument_parser() -> argparse.ArgumentParser:
     action_id = get_random_hex()
 
     parser = argparse.ArgumentParser(

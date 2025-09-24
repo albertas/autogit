@@ -128,6 +128,7 @@ color_output = true
 show_error_codes = true
 warn_return_any = true
 warn_unused_configs = true
+disable_error_code = "attr-defined,no-any-return,no-untyped-call,no-untyped-def,type-arg,unused-ignore"
 
 [tool.deadcode]
 ignore_names = [

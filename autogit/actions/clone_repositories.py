@@ -63,7 +63,7 @@ async def clone_repository(repo: RepoState) -> None:
         repo.cloning_state = CloningStates.NOT_FOUND.value
 
 
-def print_cloned_repositories(repos) -> None:
+def print_cloned_repositories(repos: dict[str, RepoState]) -> None:
     should_print_not_cloned_repos = False
     for repo in repos.values():
         if repo.cloning_state == CloningStates.CLONED.value:

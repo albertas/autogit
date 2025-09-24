@@ -46,7 +46,7 @@ def get_http_request_params_for_pull_request_creation(
     )
 
 
-def print_pull_requests(repos) -> None:
+def print_pull_requests(repos: dict[str, RepoState]) -> None:
     show_not_created_pull_requests = False
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
