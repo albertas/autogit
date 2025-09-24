@@ -29,8 +29,9 @@ Try it yourself:
 ```bash
 autogit \
   --repo https://github.com/<handle>/<repo-title> \
-  --branch add-hello-world-file \
-  --commit-message "Add hello-world.txt file" \
+  --branch=add-hello-world-file \
+  --clone-to=tmp \
+  --commit-message="Add hello-world.txt file" \
   touch hello-world.txt
 ```
 
@@ -49,8 +50,9 @@ These options could be used to specify more details:
 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description | Type | Required |
 | ---------------- | ----------- | ---- | -------- |
-| `--branch`    | A name of a branch which will be created or used to add a commit and to create pull request from. | String | Yes |
+| `--branch`       | A name of a branch which will be created or used to add a commit and to create pull request from. | String | Yes |
 | `--commit-message` | A commit message which will be used for all of the changes made.  | String | No |
+| `--clone-to`           | Path to temporal directory which will be used to clone repositories to | String | No |
 | `--repo`           | Link to repository | String | No |
 | `--repos`          | Filename which contains a list of repository links | String | No |
 
