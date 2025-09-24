@@ -7,7 +7,7 @@ run_manual_test:
 	rm -fr tmp/*
 	auto-git -r repos.txt --clone-to=tmp -m "Update mypy version" ./examples/update_mypy_version.py
 
-check: test lint mypy audit deadcode
+check: test lint mypy audit
 fix: format fixlint
 
 .venv:
