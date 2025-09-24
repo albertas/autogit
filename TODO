@@ -1,8 +1,11 @@
+1. Sometimes verbosity is turned off on Ubuntu, when package is installed via pip.
 
-Show nice error message, when Access to Git repository is denied on write:
+
+2. Show nice error message, when Access to Git repository is denied on write:
 
 stderr: 'remote: HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See https://gitlab.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied
 
+```
 Traceback (most recent call last):
   File "/home/niekas/tools/tmp/venv312/lib/python3.12/site-packages/autogit/utils/throttled_tasks_executor.py", line 172, in task_done_wrapper
     task_result = task.result()  # type: ignore
@@ -51,3 +54,4 @@ Traceback (most recent call last):
   File "/usr/lib/python3.12/asyncio/events.py", line 88, in _run
     self._context.run(self._callback, *self._args)
 RuntimeError: cannot enter context: <_contextvars.Context object at 0x7b1eb72e8b00> is already entered
+```
