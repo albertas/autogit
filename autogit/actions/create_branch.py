@@ -1,4 +1,3 @@
-
 from git.cmd import Git
 
 from autogit.data_types import RepoState

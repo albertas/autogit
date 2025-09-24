@@ -1,4 +1,3 @@
-
 import git
 
 from autogit.constants import ModificationState
@@ -39,7 +38,6 @@ def print_modified_repositories(repos: dict[str, RepoState]) -> None:
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
                 pass
-
 
 
 def commit_and_push_changes_for_each_repo(

@@ -1,4 +1,3 @@
-
 from autogit.actions.argument_parsing import parse_command_line_arguments
 from autogit.actions.clone_repositories import clone_repositories
 from autogit.actions.commit_and_push_changes import (

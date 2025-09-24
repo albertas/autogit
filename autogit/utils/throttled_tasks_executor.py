@@ -59,9 +59,7 @@ class ThrottledTasksExecutor:
             # TODO: investigate a way to start coroutines in a separate process:
             #   - https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.run_in_executor
             msg = 'Running executor in a separate process is not supported yet'
-            raise NotImplementedError(
-                msg
-            )
+            raise NotImplementedError(msg)
         thread = Thread(target=self._run_event_loop, daemon=True)
         thread.start()
 

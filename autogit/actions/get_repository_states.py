@@ -21,9 +21,7 @@ def is_url_or_git(file_names_or_repo_url: str) -> bool:
 def read_repositories_from_file(repos_filename) -> list[str]:
     """Reads a list of repositories from a file while ignoring commented out lines."""
     with open(repos_filename) as f:
-        return [
-            line.strip() for line in f if not line.strip().startswith('#')
-        ]
+        return [line.strip() for line in f if not line.strip().startswith('#')]
 
 
 def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
