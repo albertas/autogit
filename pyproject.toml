@@ -1,6 +1,5 @@
 [project]
 name = "autogit"
-version = "0.0.1"
 authors = [
     {name = "Albertas Gimbutas", email = "albertasgim@gmail.com"},
 ]
@@ -13,31 +12,72 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
+dynamic = ["version"]
 dependencies = [
     "GitPython >= 3.1.29",
-    "httpx >= 0.23.1" 
+    "httpx >= 0.23.1"
 ]
+
+[project.urls]
+homepage = "https://github.com/albertas/autogit"
+
+[project.scripts]
+autogit = "autogit.cli:main"
+
+[project.optional-dependencies]
+test = [
+    "hatch",
+    "ruff",
+    "mypy",
+    "pip-audit",
+    "deadcode",
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=. --no-cov-on-fail --cov-fail-under=50.0"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.publish.index]
-disable = true
+[tool.hatch.build]
+include = ["**/*.py"]
+exclude = ["tests/**"]
 
-[project.scripts]
-autogit = "autogit.cli:main"
+[tool.hatch.version]
+path = "autogit/__init__.py"
 
-[tool.ruff]  # https://beta.ruff.rs/docs/settings/
-line-length = 120
+[tool.ruff]  # https://docs.astral.sh/ruff/settings/
+line-length = 88
 
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",    # one blank line before class
+    "D213",    # multi line summary second line
+    "COM812",  # missing trailing comma
+    "ISC001",  # single line implicit string concatenation
+    "ANN101",  # deprecated requirement to annotate self
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "D"] # allow assert and no docs in tests
 
 [tool.mypy]
-exclude = ["build", "dist", "venv"]
+exclude = ["build", "dist", ".venv"]
 python_version = "3.12"
 strict = true
 pretty = true
@@ -46,18 +86,8 @@ show_error_codes = true
 warn_return_any = true
 warn_unused_configs = true
 
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-known_third_party = ["deadcode"]
-
-
-[tool.black]
-max_line_length = 120
-line_length = 120
-target_version = ["py312"]
-
-
-[tool.pytest.ini_options]
-addopts = "--cov=. --cov-fail-under=62.0"
+[tool.deadcode]
+ignore_names = [
+    "main",
+]
+exclude = ["tests"]
