@@ -1,4 +1,4 @@
-from typing import Dict
+
 from git.cmd import Git
 
 from autogit.data_types import RepoState
@@ -6,7 +6,7 @@ from autogit.utils.helpers import to_kebab_case
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
-async def create_branch(repo: RepoState):
+async def create_branch(repo: RepoState) -> None:
     if repo.args.branch:
         new_branch_name = repo.args.branch
     else:
@@ -21,7 +21,7 @@ async def create_branch(repo: RepoState):
 
 
 def create_branch_for_each_repo(
-    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run_not_throttled(create_branch(repo))

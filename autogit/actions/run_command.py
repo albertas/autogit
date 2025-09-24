@@ -1,10 +1,8 @@
 import os
 import subprocess
-from typing import Dict
 
-from autogit.data_types import RepoState
+from autogit.data_types import ModificationState, RepoState
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
-from autogit.data_types import ModificationState
 
 
 async def run_command(repo: RepoState) -> None:
@@ -30,7 +28,7 @@ async def run_command(repo: RepoState) -> None:
 
 
 def run_command_for_each_repo(
-    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run_not_throttled(run_command(repo))

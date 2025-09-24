@@ -9,7 +9,7 @@ class ThrottledTasksExecutorTests(TestCase):
         await asyncio.sleep(0.1)
         return f'Hello, {name}!'
 
-    def test_throttled_task_execution(self):
+    def test_throttled_task_execution(self) -> None:
         generated_greetings = []
 
         def process_result(greeting: str) -> None:
@@ -21,7 +21,7 @@ class ThrottledTasksExecutorTests(TestCase):
 
         self.assertListEqual(generated_greetings, ['Hello, World!', 'Hello, Universe!'])
 
-    def test_not_throttled_task_execution(self):
+    def test_not_throttled_task_execution(self) -> None:
         generated_greetings = []
 
         def process_result(greeting: str) -> None:
@@ -34,7 +34,7 @@ class ThrottledTasksExecutorTests(TestCase):
 
         self.assertListEqual(generated_greetings, ['Hello, World!'])
 
-    def test_wait_for_tasks_to_finish(self):
+    def test_wait_for_tasks_to_finish(self) -> None:
         generated_greetings = []
 
         def process_result(greeting: str) -> None:
@@ -42,12 +42,12 @@ class ThrottledTasksExecutorTests(TestCase):
 
         executor = ThrottledTasksExecutor(delay_between_tasks=0.05)
         executor.start()
-        self.assertEqual(executor.is_running, True)
+        assert executor.is_running
         executor.run_not_throttled(
             self.generate_greeting('World'), callback=process_result
         )
         executor.wait_for_tasks_to_finish()
         executor.stop()
 
-        self.assertEqual(executor.is_running, False)
+        assert not executor.is_running
         self.assertListEqual(generated_greetings, ['Hello, World!'])

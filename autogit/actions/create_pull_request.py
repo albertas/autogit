@@ -1,11 +1,10 @@
 import json
 from logging import getLogger
-from typing import Dict
 
 import httpx
-from autogit.constants import PullRequestStates
 
-from autogit.data_types import RepoState, HttpRequestParams
+from autogit.constants import PullRequestStates
+from autogit.data_types import HttpRequestParams, RepoState
 from autogit.utils.helpers import get_access_token
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
@@ -15,9 +14,8 @@ logger = getLogger()
 def get_http_request_params_for_pull_request_creation(
     repo: RepoState,
 ) -> HttpRequestParams:
-    """
-    Gitlab create MR docs: https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
-    Github create MR docs: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
+    """Gitlab create MR docs: https://docs.gitlab.com/ee/api/merge_requests.html#create-mr
+    Github create MR docs: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request.
     """
     if repo.domain == 'github.com':
         url = f'https://api.github.com/repos/{repo.owner}/{repo.name}/pulls'
@@ -48,32 +46,20 @@ def get_http_request_params_for_pull_request_creation(
     )
 
 
-def print_pull_requests(repos):
-    print()
-    print('\033[1;34m|' + 'Created Pull Requests'.center(77, '-') + '|\033[0m')
+def print_pull_requests(repos) -> None:
     show_not_created_pull_requests = False
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
-            print(
-                f'\033[1;34m|\033[0m - {repo.pull_request_url.ljust(73, " ")} \033[1;34m|\033[0m'
-            )
+            pass
         else:
             show_not_created_pull_requests = True
     if show_not_created_pull_requests:
-        print('\033[1;34m|' + 'Not created Pull Requests'.center(77, '-') + '|\033[0m')
         for repo in repos.values():
             if repo.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
-                print(
-                    f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m'
-                )
-                print(
-                    f'\033[1;34m|\033[0m   status_code={repo.pull_request_status_code} '
-                    f'reason={repo.pull_request_reason} \033[1;34m|\033[0m'
-                )
-    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
+                pass
 
 
-async def create_pull_request(repo: RepoState):
+async def create_pull_request(repo: RepoState) -> None:
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
     request_params = get_http_request_params_for_pull_request_creation(repo)
 
@@ -95,7 +81,7 @@ async def create_pull_request(repo: RepoState):
 
 
 def create_pull_request_for_each_repo(
-    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run(create_pull_request(repo))

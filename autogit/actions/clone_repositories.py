@@ -1,20 +1,18 @@
 import os.path
-from typing import Dict, Optional
 from urllib.parse import urlparse
 
 import git
 from git.cmd import Git
 from git.exc import GitCommandError
 
-from autogit.data_types import RepoState
 from autogit.constants import CloningStates
-from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
+from autogit.data_types import RepoState
 from autogit.utils.helpers import get_access_token, get_default_branch
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
-def get_repo_access_url(url: str) -> Optional[str]:
-    """Converts repository url to url which is suitable for cloning"""
-
+def get_repo_access_url(url: str) -> str | None:
+    """Converts repository url to url which is suitable for cloning."""
     if access_token := get_access_token(url):
         parsed_url = urlparse(url)
         domain_with_access_token = (
@@ -29,7 +27,6 @@ def get_repo_access_url(url: str) -> Optional[str]:
 
 async def clone_repository(repo: RepoState) -> None:
     """Clones repository with default (or source) branch."""
-
     clone_to = repo.args.clone_to
     repo.directory = os.path.join(clone_to, repo.name)
 
@@ -50,16 +47,15 @@ async def clone_repository(repo: RepoState) -> None:
             g.checkout(default_branch)
 
             repo.cloning_state = CloningStates.CLONED.value
+        elif repo_access_url := get_repo_access_url(repo.url):
+            git.Repo.clone_from(repo_access_url, repo.directory)
+
+            g = Git(repo.directory)
+            g.execute(['git', 'fetch', '--all'])
+
+            repo.cloning_state = CloningStates.CLONED.value
         else:
-            if repo_access_url := get_repo_access_url(repo.url):
-                git.Repo.clone_from(repo_access_url, repo.directory)
-
-                g = Git(repo.directory)
-                g.execute(['git', 'fetch', '--all'])
-
-                repo.cloning_state = CloningStates.CLONED.value
-            else:
-                repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
+            repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
 
         repo.target_branch = repo.target_branch or get_default_branch(repo)
 
@@ -67,30 +63,21 @@ async def clone_repository(repo: RepoState) -> None:
         repo.cloning_state = CloningStates.NOT_FOUND.value
 
 
-def print_cloned_repositories(repos):
-    print()
-    print('\033[1;34m|' + 'Cloned repositories'.center(77, '-') + '|\033[0m')
+def print_cloned_repositories(repos) -> None:
     should_print_not_cloned_repos = False
     for repo in repos.values():
         if repo.cloning_state == CloningStates.CLONED.value:
-            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
+            pass
         else:
             should_print_not_cloned_repos = True
     if should_print_not_cloned_repos:
-        print(
-            '\033[1;34m|\033[0m'
-            + 'Did NOT clone these repositories:'.center(77, '-')
-            + '\033[1;34m|\033[0m'
-        )
         for repo in repos.values():
             if repo.cloning_state != repo.cloning_state:
-                repo_url = (repo.url + ' ' + CloningStates.CLONED.value).ljust(73, ' ')
-                print(f'\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m')
-    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
+                (repo.url + ' ' + CloningStates.CLONED.value).ljust(73, ' ')
 
 
 def clone_repositories(
-    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run(clone_repository(repo))

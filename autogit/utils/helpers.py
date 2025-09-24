@@ -1,7 +1,7 @@
 import os
-from urllib.parse import urlparse
 from random import randint
 from string import ascii_letters, digits
+from urllib.parse import urlparse
 
 from git.cmd import Git
 
@@ -68,7 +68,6 @@ def get_default_branch(repo: RepoState):
     default_branch_name: str = g.execute(
         ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD']
     )  # type: ignore
-    default_branch_name = default_branch_name.split('/', 1)[
+    return default_branch_name.split('/', 1)[
         -1
     ]  # removes `origin/` prefix from the result
-    return default_branch_name

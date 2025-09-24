@@ -1,7 +1,7 @@
-from typing import Dict
-import git
-from autogit.constants import ModificationState
 
+import git
+
+from autogit.constants import ModificationState
 from autogit.data_types import RepoState
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
@@ -19,48 +19,31 @@ async def commit_and_push_changes(repo: RepoState) -> None:
         repo.modification_state = ModificationState.NO_FILES_CHANGED.value
 
 
-def print_modified_repositories(repos: Dict[str, RepoState]):
-    print()
-    print('\033[1;34m|' + 'Updated repositories'.center(77, '-') + '|\033[0m')
+def print_modified_repositories(repos: dict[str, RepoState]) -> None:
     should_print_not_modified_repos = False
     print_repo_exceptions = False
     for repo in repos.values():
         if repo.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
-            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
+            pass
         else:
             if repo.modification_state == ModificationState.GOT_EXCEPTION.value:
                 print_repo_exceptions = True
             should_print_not_modified_repos = True
 
     if should_print_not_modified_repos:
-        print(
-            '\033[1;34m|\033[0m'
-            + 'Did NOT modify these repositories:'.center(77, '-')
-            + '\033[1;34m|\033[0m'
-        )
         for repo in repos.values():
             if repo.cloning_state != ModificationState.PUSHED_TO_REMOTE.value:
-                repo_url = (repo.url + ' ' + repo.modification_state).ljust(73, ' ')
-                print(f'\033[1;34m|\033[0m - {repo_url} \033[1;34m|\033[0m')
+                (repo.url + ' ' + repo.modification_state).ljust(73, ' ')
 
     if print_repo_exceptions:
-        print(
-            '\033[1;34m|\033[0m' + 'Exceptions:'.center(77, '-') + '\033[1;34m|\033[0m'
-        )
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
-                print(
-                    '\033[1;34m|\033[0m'
-                    + f' - {(repo.url + " " + repo.modification_state).ljust(73, " ")}:'
-                    + '\033[1;34m|\033[0m'
-                )
-                print(repo.stderr)
+                pass
 
-    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
 def commit_and_push_changes_for_each_repo(
-    repos: Dict[str, RepoState], executor: ThrottledTasksExecutor
+    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run(commit_and_push_changes(repo))

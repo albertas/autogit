@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 ACCESS_TOKEN_VAR_NAMES = {
     'gitlab.com': 'GITLAB_ACCESS_TOKEN',
     'github.com': 'GITHUB_OAUTH_TOKEN',

@@ -1,9 +1,8 @@
 import argparse
 import logging
 import sys
-from typing import List, Optional
-from autogit.data_types import CliArguments
 
+from autogit.data_types import CliArguments
 from autogit.utils.helpers import get_random_hex
 
 
@@ -106,7 +105,7 @@ def get_argument_parser():
     return parser
 
 
-def parse_command_line_arguments(args: Optional[List[str]] = None) -> CliArguments:
+def parse_command_line_arguments(args: list[str] | None = None) -> CliArguments:
     if args is None:
         args = sys.argv[1:]
 

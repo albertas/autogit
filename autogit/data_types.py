@@ -1,20 +1,19 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
-from autogit.constants import CloningStates, PullRequestStates, ModificationState
+from autogit.constants import CloningStates, ModificationState, PullRequestStates
 
 
 @dataclass
 class CliArguments:
     action_id: str  # Generated hash for action identification
-    repos: List[str]  # A list of Urls or files containing Urls
+    repos: list[str]  # A list of Urls or files containing Urls
     clone_to: str  # Directory which will be used to clone repos to
-    commands: List[str]  # Commands which have to be exeucted in cloned repo
+    commands: list[str]  # Commands which have to be exeucted in cloned repo
     commit_message: (
         str  # Message which will be used for commit, branch, PR (if not provided)
     )
     verbose: bool  # Provides additional debug information
-    branch: Optional[str]  # Branch name for newly created changes
+    branch: str | None  # Branch name for newly created changes
 
 
 @dataclass
@@ -30,8 +29,8 @@ class RepoState:
     cloning_state: str = CloningStates.NOT_STARTED.value
     modification_state: str = ModificationState.NOT_STARTED.value
     pull_request_state: str = PullRequestStates.NOT_CREATED.value
-    pull_request_status_code: Optional[int] = None
-    pull_request_reason: Optional[str] = None
+    pull_request_status_code: int | None = None
+    pull_request_reason: str | None = None
 
     name: str = ''  # Short human readable repo identifier
     owner: str = ''  # Owner of this repo
@@ -49,5 +48,5 @@ class RepoState:
 @dataclass
 class HttpRequestParams:
     url: str
-    headers: Dict[str, str]
-    data: Dict[str, str]
+    headers: dict[str, str]
+    data: dict[str, str]
