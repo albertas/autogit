@@ -43,7 +43,7 @@ def get_argument_parser() -> argparse.ArgumentParser:
         '--commit-message',
         action='store',
         dest='commit_message',
-        default=f'Auto Git action #{action_id}',
+        default=f'AutoGit action #{action_id}',
         type=str,
         nargs='?',
         help='Message which will be used for commit message (and for branch name, PR title if they are not specified)',
