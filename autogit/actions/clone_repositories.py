@@ -67,12 +67,12 @@ async def clone_repository(repo: RepoState) -> None:
 
 
 def print_cloned_repositories(repos):
-    print()
-    print('\033[1;34m|' + 'Cloned repositories'.center(77, '-') + '|\033[0m')
+    clone_to = next(iter(repos.values())).args.clone_to
+    print('\n\033[1;34m|' + f'Cloned repositories (to {clone_to})'.center(77, '-') + '|\033[0m')
     should_print_not_cloned_repos = False
     for repo in repos.values():
         if repo.cloning_state == CloningStates.CLONED.value:
-            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
+            print(f'\033[1;34m|\033[0m {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
         else:
             should_print_not_cloned_repos = True
     if should_print_not_cloned_repos:
@@ -84,7 +84,7 @@ def print_cloned_repositories(repos):
         for repo in repos.values():
             if repo.cloning_state != repo.cloning_state:
                 print(
-                    f'\033[1;34m|\033[0m - {(repo.url + " " + CloningStates.CLONED.value).ljust(73, " ")} \033[1;34m|\033[0m'
+                    f'\033[1;34m|\033[0m {(repo.url + " " + CloningStates.CLONED.value).ljust(73, " ")} \033[1;34m|\033[0m'
                 )
     print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
