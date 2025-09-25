@@ -50,3 +50,4 @@ class HttpRequestParams:
     url: str
     headers: dict[str, str]
     data: dict[str, str]
+    json: dict[str, str] | None = None
