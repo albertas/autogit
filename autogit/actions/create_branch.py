@@ -1,5 +1,7 @@
-from git.cmd import Git
+import contextlib
+
 import git
+from git.cmd import Git
 
 from autogit.data_types import RepoState
 from autogit.utils.helpers import to_kebab_case
@@ -17,11 +19,8 @@ async def create_branch(repo: RepoState) -> None:
 
     g = Git(repo.directory)
     g.execute(['git', 'checkout', '-b', repo.branch])
-    try:
+    with contextlib.suppress(git.exc.GitCommandError):
         g.execute(['git', 'pull', 'origin', repo.branch])
-    except git.exc.GitCommandError:
-        # print('Branch in the remote does not exist yet')
-        pass
 
 
 def create_branch_for_each_repo(

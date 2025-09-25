@@ -20,7 +20,7 @@ async def commit_and_push_changes(repo: RepoState) -> None:
 
 def print_modified_repositories(repos: dict[str, RepoState]):
     print()
-    branch = list(repos.values())[0].branch
+    branch = next(iter(repos.values())).branch
     print('\033[1;34m|' + f'Created branch: {branch}'.center(77, '-') + '|\033[0m')
     should_print_not_modified_repos = False
     print_repo_exceptions = False
@@ -52,8 +52,8 @@ def print_modified_repositories(repos: dict[str, RepoState]):
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
                 print(
                     '\033[1;34m|\033[0m'
-                    + f' - {(repo.url + " " + repo.modification_state).ljust(73, " ")}:'
-                    + '\033[1;34m|\033[0m'
+                     f' - {(repo.url + " " + repo.modification_state).ljust(73, " ")}:'
+                     '\033[1;34m|\033[0m'
                 )
                 print(repo.stderr)
 

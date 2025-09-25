@@ -29,7 +29,6 @@ lint: .venv
 
 fixlint: .venv
 	.venv/bin/ruff check --fix autogit tests --unsafe-fixes
-	.venv/bin/deadcode --fix autogit tests
 
 format: .venv
 	.venv/bin/ruff format autogit tests

@@ -1,19 +1,12 @@
 import os
-from urllib.parse import urlparse
 from random import randint
 from string import ascii_letters, digits
+from urllib.parse import urlparse
 
 from git.cmd import Git
 
 from autogit.constants import ACCESS_TOKEN_VAR_NAMES
 from autogit.data_types import RepoState
-
-
-def flatten_list(list_of_lists: list[list[str]] | None) -> list[str]:
-    """Concatenates lists into one list."""
-    if not list_of_lists:
-        return []
-    return [elem for elem_list in list_of_lists for elem in elem_list]
 
 
 def remove_suffix(value: str, suffix: str, case_insensitive: bool = True) -> str:
@@ -40,7 +33,7 @@ def to_kebab_case(value: str) -> str:
         .replace(':', ' ')
         .replace(';', ' ')
     )
-    ascii_value = ''.join([l for l in value if l in allowed_chars])
+    ascii_value = ''.join([char for char in value if char in allowed_chars])
     return '-'.join(ascii_value.lower().split())[:100]
 
 
@@ -75,7 +68,6 @@ def get_default_branch(repo: RepoState):
     default_branch_name: str = g.execute(
         ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD']
     )  # type: ignore
-    default_branch_name = default_branch_name.split('/', 1)[
+    return default_branch_name.split('/', 1)[
         -1
     ]  # removes `origin/` prefix from the result
-    return default_branch_name

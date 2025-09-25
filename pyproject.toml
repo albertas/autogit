@@ -66,6 +66,7 @@ docstring-code-format = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+    "T201",    # Do not remove print() statements
     "D203",    # one blank line before class
     "D213",    # multi line summary second line
     "COM812",  # missing trailing comma

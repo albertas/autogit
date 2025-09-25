@@ -1,20 +1,17 @@
-import pytest
 import os
 from unittest.mock import patch
 
+import pytest
 
 from autogit.actions.clone_repositories import (
-    clone_repositories,
-    clone_repository,
     get_repo_access_url,
-    print_cloned_repositories,
 )
 
 # https://gitlab.com/niekas/jsonstate.git
 
 
 @pytest.mark.parametrize(
-    'url,expected_url',
+    ('url', 'expected_url'),
     [
         (
             'https://gitlab.com/niekas/jsonstate.git',
