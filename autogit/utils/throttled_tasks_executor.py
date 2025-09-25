@@ -1,8 +1,8 @@
 import asyncio
+from asyncio import Future
 import time
 import traceback
 from collections.abc import Callable, Coroutine
-from sys import version_info
 from threading import Thread
 
 
@@ -29,17 +29,14 @@ class ThrottledTasksExecutor:
         self, delay_between_tasks: float = 0.2, in_separate_process: bool = False
     ) -> None:
         self.loop = asyncio.new_event_loop()
-        self.running_tasks = (
+        self.running_tasks: set[Future] = (
             set()
         )  # TODO: Find the example with task removal from the set.
         # TODO: Would be nice to have awaitable future, instead of infinite loop.
         self.delay_between_tasks = delay_between_tasks
         self.in_separate_process = in_separate_process
 
-        if version_info.major == 3 and version_info.minor >= 10:
-            self.can_task_be_executed = asyncio.Condition()
-        else:
-            self.can_task_be_executed = asyncio.Condition(loop=self.loop)
+        self.can_task_be_executed = asyncio.Condition()
         self.is_running = False
 
     def __enter__(self) -> 'ThrottledTasksExecutor':
@@ -99,7 +96,7 @@ class ThrottledTasksExecutor:
             msg = 'Can only execute coroutines, not coroutine provided'
             raise ValueError(msg)
 
-        task = asyncio.run_coroutine_threadsafe(
+        task: Future = asyncio.run_coroutine_threadsafe(  # type: ignore
             self._throttled_task(coroutine), self.loop
         )
         self.running_tasks.add(task)
@@ -124,7 +121,7 @@ class ThrottledTasksExecutor:
             msg = 'Can only execute coroutines, not coroutine provided'
             raise ValueError(msg)
 
-        task = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
+        task: Future = asyncio.run_coroutine_threadsafe(coroutine, self.loop)  # type: ignore
         self.running_tasks.add(task)
         task.add_done_callback(self._mark_task_done(callback))
 
@@ -167,7 +164,7 @@ class ThrottledTasksExecutor:
     def _mark_task_done(self, callback) -> Callable:
         """Decorator for callback to set the task as done after the callback is processed."""
 
-        def task_done_wrapper(task: Coroutine) -> None:
+        def task_done_wrapper(task: Future) -> None:
             try:
                 task_result = task.result()  # type: ignore
             except Exception:
