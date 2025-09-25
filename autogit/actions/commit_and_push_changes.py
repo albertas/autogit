@@ -18,26 +18,46 @@ async def commit_and_push_changes(repo: RepoState) -> None:
         repo.modification_state = ModificationState.NO_FILES_CHANGED.value
 
 
-def print_modified_repositories(repos: dict[str, RepoState]) -> None:
+def print_modified_repositories(repos: dict[str, RepoState]):
+    print()
+    branch = list(repos.values())[0].branch
+    print('\033[1;34m|' + f'Created branch: {branch}'.center(77, '-') + '|\033[0m')
     should_print_not_modified_repos = False
     print_repo_exceptions = False
     for repo in repos.values():
         if repo.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
-            pass
+            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
         else:
             if repo.modification_state == ModificationState.GOT_EXCEPTION.value:
                 print_repo_exceptions = True
             should_print_not_modified_repos = True
 
     if should_print_not_modified_repos:
+        print(
+            '\033[1;34m|\033[0m'
+            + 'Did NOT modify these repositories:'.center(77, '-')
+            + '\033[1;34m|\033[0m'
+        )
         for repo in repos.values():
             if repo.cloning_state != ModificationState.PUSHED_TO_REMOTE.value:
-                (repo.url + ' ' + repo.modification_state).ljust(73, ' ')
+                print(
+                    f'\033[1;34m|\033[0m - {(repo.url + " " + repo.modification_state).ljust(73, " ")} \033[1;34m|\033[0m'
+                )
 
     if print_repo_exceptions:
+        print(
+            '\033[1;34m|\033[0m' + 'Exceptions:'.center(77, '-') + '\033[1;34m|\033[0m'
+        )
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
-                pass
+                print(
+                    '\033[1;34m|\033[0m'
+                    + f' - {(repo.url + " " + repo.modification_state).ljust(73, " ")}:'
+                    + '\033[1;34m|\033[0m'
+                )
+                print(repo.stderr)
+
+    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
 def commit_and_push_changes_for_each_repo(

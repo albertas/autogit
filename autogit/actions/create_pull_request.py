@@ -46,17 +46,28 @@ def get_http_request_params_for_pull_request_creation(
     )
 
 
-def print_pull_requests(repos: dict[str, RepoState]) -> None:
+def print_pull_requests(repos):
+    print()
+    print('\033[1;34m|' + 'Created Pull Requests'.center(77, '-') + '|\033[0m')
     show_not_created_pull_requests = False
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
-            pass
+            print(
+                f'\033[1;34m|\033[0m - {repo.pull_request_url.ljust(73, " ")} \033[1;34m|\033[0m'
+            )
         else:
             show_not_created_pull_requests = True
     if show_not_created_pull_requests:
+        print('\033[1;34m|' + 'Not created Pull Requests'.center(77, '-') + '|\033[0m')
         for repo in repos.values():
             if repo.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
-                pass
+                print(
+                    f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m'
+                )
+                print(
+                    f'\033[1;34m|\033[0m   status_code={repo.pull_request_status_code} reason={repo.pull_request_reason} \033[1;34m|\033[0m'
+                )
+    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
 async def create_pull_request(repo: RepoState) -> None:

@@ -29,9 +29,7 @@ def test_clone_to_parsing() -> None:
     args = parse_command_line_arguments(['-r', 'foo', '-c', 'my_dir'])
     assert args.clone_to == 'my_dir'
 
-    args = parse_command_line_arguments(
-        ['-r', 'foo', '--clone-to', 'my_another_dir']
-    )
+    args = parse_command_line_arguments(['-r', 'foo', '--clone-to', 'my_another_dir'])
     assert args.clone_to == 'my_another_dir'
 
 

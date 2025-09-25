@@ -1,9 +1,9 @@
+import time
 import asyncio
-import traceback
-from collections.abc import Callable, Coroutine
-from sys import version_info
+from typing import Callable, Coroutine, Optional, Union, Any
 from threading import Thread
-from typing import Any
+import traceback
+from sys import version_info
 
 
 class ThrottledTasksExecutor:
@@ -29,7 +29,7 @@ class ThrottledTasksExecutor:
         self, delay_between_tasks: float = 0.2, in_separate_process: bool = False
     ) -> None:
         self.loop = asyncio.new_event_loop()
-        self.running_tasks: set[Any] = (
+        self.running_tasks = (
             set()
         )  # TODO: Find the example with task removal from the set.
         # TODO: Would be nice to have awaitable future, instead of infinite loop.
@@ -39,7 +39,7 @@ class ThrottledTasksExecutor:
         if version_info.major == 3 and version_info.minor >= 10:
             self.can_task_be_executed = asyncio.Condition()
         else:
-            self.can_task_be_executed = asyncio.Condition(loop=self.loop)  # type: ignore
+            self.can_task_be_executed = asyncio.Condition(loop=self.loop)
         self.is_running = False
 
     def __enter__(self) -> 'ThrottledTasksExecutor':
@@ -50,18 +50,21 @@ class ThrottledTasksExecutor:
         self.wait_for_tasks_to_finish()
         self.stop()
 
-    def start(self, in_separate_process: bool | None = None) -> None:
-        """Starts a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor."""
+    def start(self, in_separate_process: Optional[bool] = None) -> None:
+        """Starts a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor"""
+
         if in_separate_process is None:
             in_separate_process = self.in_separate_process
 
         if in_separate_process:
             # TODO: investigate a way to start coroutines in a separate process:
             #   - https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.run_in_executor
-            msg = 'Running executor in a separate process is not supported yet'
-            raise NotImplementedError(msg)
-        thread = Thread(target=self._run_event_loop, daemon=True)
-        thread.start()
+            raise NotImplemented(
+                'Running executor in a separate process is not supported yet'
+            )
+        else:
+            thread = Thread(target=self._run_event_loop, daemon=True)
+            thread.start()
 
         self.is_running = True
 
@@ -71,62 +74,58 @@ class ThrottledTasksExecutor:
         )
 
     def stop(self) -> None:
-        """Terminates a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor."""
+        """Terminates a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor"""
+        self.is_running = False
         self._allow_task_execution_task.cancel()
 
-        # Ensures that the _allow_task_execution_task is being fully cancelled https://stackoverflow.com/a/62443715
-        self.loop._run_once()  # type: ignore
-
+        time.sleep(
+            self.delay_between_tasks
+        )  # Wait for _allow_task_execution_task to be destroyed
         self.loop.stop()
-        self.is_running = False
 
     def run(
         self,
-        coroutine: Coroutine | Callable,
+        coroutine: Union[Coroutine, Callable],
         *args,
-        callback: Callable | None = None,  # type: ignore
+        callback: Optional[Callable] = None,
         **kwargs,
     ) -> None:
         """Executes coroutine in an executor thread, which makes sure not to hit throttling limits."""
-        if callback is None:
 
-            def callback(*args, **kwargs) -> None:
-                return None
+        if callback is None:
+            callback = lambda *args, **kwargs: None
 
         if not isinstance(coroutine, Coroutine):
             coroutine = coroutine(*args, **kwargs)
         if not isinstance(coroutine, Coroutine):
-            msg = 'Can only execute coroutines, not coroutine provided'
-            raise ValueError(msg)
+            raise ValueError('Can only execute coroutines, not coroutine provided')
 
         task = asyncio.run_coroutine_threadsafe(
             self._throttled_task(coroutine), self.loop
         )
         self.running_tasks.add(task)
-        task.add_done_callback(self._mark_task_done(callback))  # type: ignore
+        task.add_done_callback(self._mark_task_done(callback))
 
     def run_not_throttled(
         self,
-        coroutine: Coroutine | Callable,
+        coroutine: Union[Coroutine, Callable],
         *args,
-        callback: Callable | None = None,  # type: ignore
+        callback: Optional[Callable] = None,
         **kwargs,
     ) -> None:
         """Executes coroutine in an executor event loop ignoring throttled tasks queue."""
-        if callback is None:
 
-            def callback(*args, **kwargs) -> None:
-                return None
+        if callback is None:
+            callback = lambda *args, **kwargs: None
 
         if not isinstance(coroutine, Coroutine):
             coroutine = coroutine(*args, **kwargs)
         if not isinstance(coroutine, Coroutine):
-            msg = 'Can only execute coroutines, not coroutine provided'
-            raise ValueError(msg)
+            raise ValueError('Can only execute coroutines, not coroutine provided')
 
         task = asyncio.run_coroutine_threadsafe(coroutine, self.loop)
         self.running_tasks.add(task)
-        task.add_done_callback(self._mark_task_done(callback))  # type: ignore
+        task.add_done_callback(self._mark_task_done(callback))
 
     def wait_for_tasks_to_finish(self) -> None:
         asyncio.run(self.async_wait_for_tasks_to_finish())
@@ -157,27 +156,30 @@ class ThrottledTasksExecutor:
     def _throttled_task(self, coroutine: Coroutine) -> Coroutine:
         """Decorator for coroutine to wait for permission before executing the coroutine."""
 
-        async def throttled_task_wrapper(*args, **kwargs):
+        async def throttled_task_wrapper(*args, **kwargs) -> Any:
             async with self.can_task_be_executed:
                 await self.can_task_be_executed.wait()
             return await coroutine
 
         return throttled_task_wrapper()
 
-    def _mark_task_done(self, callback):
+    def _mark_task_done(self, callback) -> Callable:
         """Decorator for callback to set the task as done after the callback is processed."""
 
         def task_done_wrapper(task: Coroutine) -> None:
             try:
                 task_result = task.result()  # type: ignore
-            except Exception:
+            except Exception as e:
+                print('Got an exception during coroutine execution: {e}')
                 traceback.print_exc()
             else:
                 try:
                     callback(task_result)
-                except Exception:
+                except Exception as e:
+                    print('Got an exception during callback execution: {e}')
                     traceback.print_exc()
             self.running_tasks.discard(task)
+            return None
 
         return task_done_wrapper
 

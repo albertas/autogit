@@ -13,7 +13,7 @@ from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 def get_repo_access_url(url: str) -> str | None:
     """Converts repository url to url which is suitable for cloning."""
-    if url.startswith("http"):
+    if url.startswith('http'):
         if access_token := get_access_token(url):
             parsed_url = urlparse(url)
             domain_with_access_token = (
@@ -23,7 +23,7 @@ def get_repo_access_url(url: str) -> str | None:
                 netloc=domain_with_access_token, scheme='https'
             )
             return parsed_url.geturl()
-    elif url.startswith("git@"):
+    elif url.startswith('git@'):
         return url
     return None
 
@@ -66,17 +66,27 @@ async def clone_repository(repo: RepoState) -> None:
         repo.cloning_state = CloningStates.NOT_FOUND.value
 
 
-def print_cloned_repositories(repos: dict[str, RepoState]) -> None:
+def print_cloned_repositories(repos):
+    print()
+    print('\033[1;34m|' + 'Cloned repositories'.center(77, '-') + '|\033[0m')
     should_print_not_cloned_repos = False
     for repo in repos.values():
         if repo.cloning_state == CloningStates.CLONED.value:
-            pass
+            print(f'\033[1;34m|\033[0m - {repo.url.ljust(73, " ")} \033[1;34m|\033[0m')
         else:
             should_print_not_cloned_repos = True
     if should_print_not_cloned_repos:
+        print(
+            '\033[1;34m|'
+            + 'Did NOT clone these repositories:'.center(77, '-')
+            + '|\033[0m'
+        )
         for repo in repos.values():
             if repo.cloning_state != repo.cloning_state:
-                (repo.url + ' ' + CloningStates.CLONED.value).ljust(73, ' ')
+                print(
+                    f'\033[1;34m|\033[0m - {(repo.url + " " + CloningStates.CLONED.value).ljust(73, " ")} \033[1;34m|\033[0m'
+                )
+    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
 def clone_repositories(

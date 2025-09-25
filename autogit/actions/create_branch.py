@@ -20,7 +20,7 @@ async def create_branch(repo: RepoState) -> None:
     try:
         g.execute(['git', 'pull', 'origin', repo.branch])
     except git.exc.GitCommandError:
-        print("Branch in the remote does not exist yet")
+        print('Branch in the remote does not exist yet')
 
 
 def create_branch_for_each_repo(
