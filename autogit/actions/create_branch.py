@@ -12,9 +12,10 @@ async def create_branch(repo: RepoState) -> None:
     if repo.args.branch:
         new_branch_name = repo.args.branch
     else:
-        new_branch_name = (
-            f'{to_kebab_case(repo.args.commit_message)}-{repo.args.action_id}'
-        )
+        new_branch_name = to_kebab_case(repo.args.commit_message)
+        if repo.args.action_id and repo.args.action_id not in new_branch_name:
+            new_branch_name += f'-{repo.args.action_id}'
+
     repo.branch = new_branch_name
 
     g = Git(repo.directory)
