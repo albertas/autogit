@@ -1,12 +1,12 @@
-from autogit.actions.argument_parsing import parse_command_line_arguments
-from autogit.actions.clone_repositories import clone_repositories
-from autogit.actions.commit_and_push_changes import (
+from autogit.actions._1_parse_arguments import parse_command_line_arguments
+from autogit.actions._4_clone_repositories import clone_repositories
+from autogit.actions._7_commit_and_push_changes import (
     commit_and_push_changes_for_each_repo,
 )
-from autogit.actions.create_branch import create_branch_for_each_repo
-from autogit.actions.create_pull_request import create_pull_request_for_each_repo
-from autogit.actions.get_repository_states import get_repository_states
-from autogit.actions.run_command import run_command_for_each_repo
+from autogit.actions._5_create_branch import create_branch_for_each_repo
+from autogit.actions._8_create_pull_request import create_pull_request_for_each_repo
+from autogit.actions._2_get_repository_states import get_repository_states
+from autogit.actions._6_run_command import run_command_for_each_repo
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 

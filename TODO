@@ -1,4 +1,27 @@
-1. Sometimes verbosity is turned off on Ubuntu, when package is installed via pip.
+
+1. Test all possible tokens for each provided repository.
+
+  Actions to be added:
+  - parse_domains.
+  - detect API version.
+  - detect correct token and permissions for each repository.
+
+
+
+  Parse domains for each repository provided and detect which token has to be used for each of them.
+  Detect API and version for each domain.
+
+
+  # Paskambinti, kai būna smuiko pamokos Albertui paklausti, ar eina į smuiką.
+
+
+
+
+
+
+
+
+
 
 
 2. Show nice error message, when Access to Git repository is denied on write:
