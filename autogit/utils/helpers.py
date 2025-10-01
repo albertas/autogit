@@ -55,7 +55,15 @@ def get_domain(url: str) -> str:
 
 def get_repo_owner(url: str) -> str:
     """Parses repository owner from a valid Git url."""
-    return url.rsplit('/', 2)[1]
+    return url.rsplit('/', 2)[-2]
+
+
+def get_repo_group(url: str) -> str | None:
+    group = url.rsplit('/', 3)[-3]
+    domain = get_domain(url)
+    if domain in group:
+        return None
+    return group
 
 
 def get_repo_name(url: str) -> str:

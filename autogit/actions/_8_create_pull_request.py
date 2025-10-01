@@ -18,6 +18,7 @@ def get_http_request_params_for_pull_request_creation(
     Github create MR docs: https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request.
     """
     if repo.domain == 'github.com':
+        # TODO: add group support
         url = f'https://api.github.com/repos/{repo.owner}/{repo.name}/pulls'
         headers = {
             'Accept': 'application/vnd.github+json',
@@ -32,7 +33,8 @@ def get_http_request_params_for_pull_request_creation(
         }
 
     else:  # Use gitlab.com API by default
-        url = f'https://{repo.domain}/api/v4/projects/{repo.owner}%2F{repo.name}/merge_requests'
+        project_id = f'{repo.group + "%2F" if repo.group else ""}{repo.owner}%2F{repo.name}'
+        url = f'https://{repo.domain}/api/v4/projects/{project_id}/merge_requests'
         headers = {'PRIVATE-TOKEN': get_access_token(repo.url)}
         data = {
             'source_branch': repo.branch,
