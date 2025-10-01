@@ -1,6 +1,7 @@
 import pytest
 
 from autogit.actions._2_get_repository_states import get_repository_state
+from autogit.data_types import CliArguments
 
 
 @pytest.mark.parametrize(
@@ -24,10 +25,23 @@ from autogit.actions._2_get_repository_states import get_repository_state
     ],
 )
 def test_get_repository_state(
-    repo_url, expected_name, expected_owner, expected_group, expected_domain
+    args, repo_url, expected_name, expected_owner, expected_group, expected_domain
 ):
-    repo_state = get_repository_state(repo_url, 'tmp', None)
+    repo_state = get_repository_state(repo_url, 'tmp', args)
     assert repo_state.name == expected_name
     assert repo_state.owner == expected_owner
     assert repo_state.group == expected_group
     assert repo_state.domain == expected_domain
+
+
+@pytest.fixture
+def args():
+    return CliArguments(
+        action_id='test_action_id',
+        repos=['https://gitlab.com/myuser/myreponame.git'],
+        clone_to='tmp',
+        commands=['echo', "'Hello'"],
+        commit_message='Test commit message',
+        verbose=False,
+        branch='test_branch',
+    )
