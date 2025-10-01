@@ -31,7 +31,7 @@ def get_repository_state(repo_url: str, branch: str, args: CliArguments) -> Repo
     repo_group = get_repo_group(repo_url)
     domain = get_domain(repo_url)
 
-    repo = RepoState(
+    return RepoState(
         args=args,
         name=repo_name,
         owner=repo_owner,
@@ -40,15 +40,12 @@ def get_repository_state(repo_url: str, branch: str, args: CliArguments) -> Repo
         domain=domain,
         branch=branch,
     )
-    return repo
 
 
 def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
     repo_urls = []
     for file_names_or_repo_url in args.repos:
-        if not is_url_or_git(file_names_or_repo_url) and os.path.exists(
-            file_names_or_repo_url
-        ):
+        if not is_url_or_git(file_names_or_repo_url) and os.path.exists(file_names_or_repo_url):
             newly_read_repos = read_repositories_from_file(file_names_or_repo_url)
             repo_urls.extend(newly_read_repos)
         else:
@@ -58,6 +55,7 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
 
     repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
-        repos[repo_name] = get_repository_state(repo_url, branch, args)
+        repo_state = get_repository_state(repo_url, branch, args)
+        repos[repo_state.name] = repo_state
 
     return repos

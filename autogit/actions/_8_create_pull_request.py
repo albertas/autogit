@@ -53,18 +53,14 @@ def print_pull_requests(repos):
     show_not_created_pull_requests = False
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
-            print(
-                f'\033[1;34m|\033[0m {repo.pull_request_url.ljust(75, " ")} \033[1;34m|\033[0m'
-            )
+            print(f'\033[1;34m|\033[0m {repo.pull_request_url.ljust(75, " ")} \033[1;34m|\033[0m')
         else:
             show_not_created_pull_requests = True
     if show_not_created_pull_requests:
         print('\033[1;34m|' + 'Not created Pull Requests'.center(77, '-') + '|\033[0m')
         for repo in repos.values():
             if repo.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
-                print(
-                    f'\033[1;34m|\033[0m {repo.url.ljust(75, " ")} \033[1;34m|\033[0m'
-                )
+                print(f'\033[1;34m|\033[0m {repo.url.ljust(75, " ")} \033[1;34m|\033[0m')
                 print(
                     f'\033[1;34m|\033[0m   status_code={repo.pull_request_status_code} reason={repo.pull_request_reason} \033[1;34m|\033[0m'
                 )
@@ -83,9 +79,7 @@ async def create_pull_request(repo: RepoState) -> None:
         )
         if response.status_code < 400:
             repo.pull_request_state = PullRequestStates.CREATED.value
-            repo.pull_request_url = response.json().get(
-                'web_url', response.json().get('url')
-            )
+            repo.pull_request_url = response.json().get('web_url', response.json().get('url'))
         else:
             repo.pull_request_state = PullRequestStates.GOT_BAD_RESPONSE.value
             repo.pull_request_status_code = response.status_code

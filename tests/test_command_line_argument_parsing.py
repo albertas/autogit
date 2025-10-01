@@ -10,9 +10,7 @@ def test_repositories_parsing() -> None:
     args = parse_command_line_arguments(['-r', 'foo', '-r', 'bar', '-r', 'spam'])
     assert args.repos == ['foo', 'bar', 'spam']
 
-    args = parse_command_line_arguments(
-        ['--repo', 'foo', '--repos', 'bar', '-r', 'spam']
-    )
+    args = parse_command_line_arguments(['--repo', 'foo', '--repos', 'bar', '-r', 'spam'])
     assert args.repos == ['foo', 'bar', 'spam']
 
     args = parse_command_line_arguments(['--repos', 'foo', 'bar'])

@@ -27,9 +27,7 @@ class TestThrottledTasksExecutor:
             generated_greetings.append(greeting)
 
         with ThrottledTasksExecutor(delay_between_tasks=0.05) as executor:
-            executor.run_not_throttled(
-                self.generate_greeting('World'), callback=process_result
-            )
+            executor.run_not_throttled(self.generate_greeting('World'), callback=process_result)
 
         assert generated_greetings == ['Hello, World!']
 
@@ -42,9 +40,7 @@ class TestThrottledTasksExecutor:
         executor = ThrottledTasksExecutor(delay_between_tasks=0.05)
         executor.start()
         assert executor.is_running
-        executor.run_not_throttled(
-            self.generate_greeting('World'), callback=process_result
-        )
+        executor.run_not_throttled(self.generate_greeting('World'), callback=process_result)
         executor.wait_for_tasks_to_finish()
         executor.stop()
 

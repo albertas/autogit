@@ -44,9 +44,7 @@ def print_modified_repositories(repos: dict[str, RepoState]):
                 )
 
     if print_repo_exceptions:
-        print(
-            '\033[1;34m|\033[0m' + 'Exceptions:'.center(77, '-') + '\033[1;34m|\033[0m'
-        )
+        print('\033[1;34m|\033[0m' + 'Exceptions:'.center(77, '-') + '\033[1;34m|\033[0m')
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
                 print(

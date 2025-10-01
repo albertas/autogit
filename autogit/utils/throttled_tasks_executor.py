@@ -1,7 +1,7 @@
 import asyncio
-from asyncio import Future
 import time
 import traceback
+from asyncio import Future
 from collections.abc import Callable, Coroutine
 from threading import Thread
 
@@ -72,9 +72,7 @@ class ThrottledTasksExecutor:
         self.is_running = False
         self._allow_task_execution_task.cancel()
 
-        time.sleep(
-            self.delay_between_tasks
-        )  # Wait for _allow_task_execution_task to be destroyed
+        time.sleep(self.delay_between_tasks)  # Wait for _allow_task_execution_task to be destroyed
         self.loop.stop()
 
     def run(
