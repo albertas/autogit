@@ -4,8 +4,7 @@ UV := $(shell uv --version 2>/dev/null)
 OS := $(shell uname)
 
 manual_test:
-	rm -fr tmp/*
-	autogit -r repos.txt --clone-to=tmp -m "Update mypy version" ./examples/update_mypy_version.py
+	autogit --target-branch=target --clone-to=manual_test/tmp -r manual_test/repos.txt ./manual_test/hello.py
 
 check: test lint mypy audit
 fix: format fixlint

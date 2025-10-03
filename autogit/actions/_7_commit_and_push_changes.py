@@ -20,12 +20,12 @@ async def commit_and_push_changes(repo: RepoState) -> None:
 
 def print_modified_repositories(repos: dict[str, RepoState]):
     branch = next(iter(repos.values())).branch
-    print('\n\033[1;34m|' + f'Created branch: {branch}'.center(77, '-') + '|\033[0m')
+    print('\n\033[1;32m' + f'Created branch: {branch}'.center(79, ' ') + '\033[0m')
     should_print_not_modified_repos = False
     print_repo_exceptions = False
     for repo in repos.values():
         if repo.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
-            print(f'\033[1;34m|\033[0m {repo.url.ljust(75, " ")} \033[1;34m|\033[0m')
+            print(f'\033[1;32m\033[0m {repo.url.ljust(77, " ")} \033[1;32m\033[0m')
         else:
             if repo.modification_state == ModificationState.GOT_EXCEPTION.value:
                 print_repo_exceptions = True
@@ -33,28 +33,26 @@ def print_modified_repositories(repos: dict[str, RepoState]):
 
     if should_print_not_modified_repos:
         print(
-            '\033[1;34m|\033[0m'
-            + 'Did NOT modify these repositories:'.center(77, '-')
-            + '\033[1;34m|\033[0m'
+            '\033[1;32m|\033[0m'
+            + 'Did NOT modify these repositories:'.center(77, ' ')
+            + '\033[1;32m|\033[0m'
         )
         for repo in repos.values():
             if repo.cloning_state != ModificationState.PUSHED_TO_REMOTE.value:
                 print(
-                    f'\033[1;34m|\033[0m {(repo.url + " " + repo.modification_state).ljust(75, " ")} \033[1;34m|\033[0m'
+                    f'\033[1;32m|\033[0m {(repo.url + " " + repo.modification_state).ljust(75, " ")} \033[1;32m|\033[0m'
                 )
 
     if print_repo_exceptions:
-        print('\033[1;34m|\033[0m' + 'Exceptions:'.center(77, '-') + '\033[1;34m|\033[0m')
+        print('\033[1;32m\033[0m' + 'Exceptions:'.center(79, ' ') + '\033[1;32m\033[0m')
         for repo in repos.values():
             if repo.cloning_state == ModificationState.GOT_EXCEPTION.value:
                 print(
-                    '\033[1;34m|\033[0m'
-                    f' {(repo.url + " " + repo.modification_state).ljust(75, " ")}:'
-                    '\033[1;34m|\033[0m'
+                    '\033[1;32m\033[0m'
+                    f' {(repo.url + " " + repo.modification_state).ljust(77, " ")}:'
+                    '\033[1;32m\033[0m'
                 )
                 print(repo.stderr)
-
-    print('\033[1;34m|' + ''.center(77, '-') + '|\033[0m')
 
 
 def commit_and_push_changes_for_each_repo(
