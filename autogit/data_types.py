@@ -11,7 +11,9 @@ class CliArguments:
     commands: list[str]  # Commands which have to be exeucted in cloned repo
     commit_message: str  # Message which will be used for commit, branch, PR (if not provided)
     verbose: bool  # Provides additional debug information
-    branch: str | None  # Branch name for newly created changes
+    source_branch: str | None  # Base branch on which the new branch will be created (if it does not exist yet)
+    branch: str | None  # Branch to use in PR as a source branch (it will be created if does not exist)
+    target_branch: str | None  # Branch to use in PR as a target branch
 
 
 @dataclass

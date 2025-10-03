@@ -27,7 +27,7 @@ from autogit.data_types import CliArguments
 def test_get_repository_state(
     args, repo_url, expected_name, expected_owner, expected_group, expected_domain
 ):
-    repo_state = get_repository_state(repo_url, 'tmp', args)
+    repo_state = get_repository_state(repo_url, 'tmp', args=args)
     assert repo_state.name == expected_name
     assert repo_state.owner == expected_owner
     assert repo_state.group == expected_group
@@ -43,5 +43,7 @@ def args():
         commands=['echo', "'Hello'"],
         commit_message='Test commit message',
         verbose=False,
+        source_branch='test_source_branch',
         branch='test_branch',
+        target_branch='test target_branch',
     )

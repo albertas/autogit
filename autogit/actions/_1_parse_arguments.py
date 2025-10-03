@@ -60,13 +60,23 @@ def get_argument_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
+        '-s',
+        '--source-branch',
+        action='store',
+        dest='source_branch',
+        type=str,
+        nargs='?',
+        help='Base branch which will be used as a basis for a new branch creation. Target branch will be used by default.'
+    )
+
+    parser.add_argument(
         '-b',
         '--branch',
         action='store',
         dest='branch',
         type=str,
         nargs='?',
-        help='Branch name which will be used to apply changes (it will be created if it does not exist)',
+        help='A name of a branch which will be used to commit changes to and to create Pull Request from (this branch will be created if it does not exist)',
     )
 
     parser.add_argument(
@@ -76,7 +86,7 @@ def get_argument_parser() -> argparse.ArgumentParser:
         dest='target_branch',
         type=str,
         nargs='?',
-        help='Target branch name which will be used to pull changes into',
+        help='Branch to be used as a target in a Pull Request.',
     )
 
     parser.add_argument(

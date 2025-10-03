@@ -20,8 +20,10 @@ autogit --repos repos.txt update_repo.py
 Where `repos.txt` could be:
 ```
 https://gitlab.com/<handle>/<repo-title>
-https://gitlab.com/<handle>/<repo-title2>
-https://github.com/<handle>/<repo-title>
+https://gitlab.com/<handle>/<repo-title2>.git
+https://gitlab.com/<group>/<namespace>/<repo-title3>
+https://github.com/<handle>/<repo-title4>
+https://yourmanagedgit.com/<handle>/<repo-title5>
 ```
 
 Try it yourself:
@@ -37,7 +39,7 @@ autogit \
 
 These steps will be executed for each specified repository:
 1. The repository will be cloned into `/tmp/` directory.
-2. A new branch will be created or fetched if it already exists.
+2. A new branch `add-hello-world-file` will be created or fetched if it already exists.
 3. The command or a script will be executed inside the repository.
 4. A commit containing all the changes will be created.
 5. Newly created commit will be pushed to remote repository.
@@ -50,7 +52,9 @@ These options could be used to specify more details:
 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description | Type | Required |
 | ---------------- | ----------- | ---- | -------- |
-| `--branch`       | A name of a branch which will be created or used to add a commit and to create pull request from. | String | Yes |
+| `--branch`       | A name of a branch which will be used to commit changes to and to create Pull Request from (this branch will be created if it does not exist) | String | Yes |
+| `--source-branch`       | Base branch which will be used as a basis for a new branch creation. Target branch will be used by default. | String | No |
+| `--target-branch`       | Branch to be used as a target in a Pull Request. | String | No |
 | `--commit-message` | A commit message which will be used for all of the changes made.  | String | No |
 | `--clone-to`           | Path to temporal directory which will be used to clone repositories to | String | No |
 | `--repo`           | Link to repository | String | No |
