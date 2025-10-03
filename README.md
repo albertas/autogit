@@ -1,4 +1,8 @@
+![autogit banner](images/autogit_banner.png)
+
+
 `autogit` is a command line tool for updating multiple GitLab or GitHub repositories with a single command.
+
 
 ## Usage
 Generate an access token at [GitLab](https://gitlab.com/-/profile/personal_access_tokens)
