@@ -66,7 +66,7 @@ def get_argument_parser() -> argparse.ArgumentParser:
         dest='source_branch',
         type=str,
         nargs='?',
-        help='Base branch which will be used as a basis for a new branch creation. Target branch will be used by default.'
+        help='Base branch which will be used as a basis for a new branch creation. Target branch will be used by default.',
     )
 
     parser.add_argument(

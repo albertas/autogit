@@ -28,6 +28,8 @@ async def clone_repository(repo: RepoState) -> None:
     """Clones repository with default (or source) branch."""
     clone_to = repo.args.clone_to
     repo.directory = os.path.join(clone_to, repo.name)
+    repo.target_branch = repo.target_branch or get_default_branch(repo)
+    repo.source_branch = repo.source_branch or repo.target_branch
 
     # TODO: add a way to clone using access token: https://stackoverflow.com/questions/25409700/using-gitlab-token-to-clone-without-authentication/29570677#29570677
     # git clone https://:YOURKEY@your.gilab.company.org/group/project.git
@@ -42,8 +44,7 @@ async def clone_repository(repo: RepoState) -> None:
             g.clean('-dfx')
             g.execute(['git', 'fetch', '--all'])
 
-            default_branch = get_default_branch(repo)
-            g.checkout(default_branch)
+            g.checkout(repo.source_branch)
 
             repo.cloning_state = CloningStates.CLONED.value
         elif repo_access_url := get_repo_access_url(repo.url):
@@ -52,17 +53,20 @@ async def clone_repository(repo: RepoState) -> None:
             g = Git(repo.directory)
             g.execute(['git', 'fetch', '--all'])
 
+            source_branch = repo.source_branch or repo.target_branch or get_default_branch(repo)
+            # TODO: check if this branch exist - if not - show nice error message and abort whole action
+            g.checkout(source_branch)
+
             repo.cloning_state = CloningStates.CLONED.value
         else:
             repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
-
-        repo.target_branch = repo.target_branch or get_default_branch(repo)
 
     except GitCommandError:
         repo.cloning_state = CloningStates.NOT_FOUND.value
 
 
 def print_cloned_repositories(repos):
+    # TODO: flush print message after each repository action is done (not to freeze the screen if cloning multiple repositories takes too long)
     clone_to = next(iter(repos.values())).args.clone_to
     print('\n\033[1;34m|' + f'Cloned repositories (to {clone_to})'.center(77, '-') + '|\033[0m')
     should_print_not_cloned_repos = False

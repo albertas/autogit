@@ -19,7 +19,14 @@ async def create_branch(repo: RepoState) -> None:
     repo.branch = new_branch_name
 
     g = Git(repo.directory)
-    g.execute(['git', 'checkout', '-b', repo.branch])
+
+    # TODO: add a conditional check if the branch exists or not
+    # TODO: what should be done if the branch exists and contains changes? Error should be shown and action canceled with nice error message.
+    try:
+        g.execute(['git', 'checkout', '-b', repo.branch])
+    except git.exc.GitCommandError:
+        g.execute(['git', 'checkout', repo.branch])
+
     with contextlib.suppress(git.exc.GitCommandError):
         g.execute(['git', 'pull', 'origin', repo.branch])
 

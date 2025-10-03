@@ -26,12 +26,12 @@ def read_repositories_from_file(repos_filename: str) -> list[str]:
 
 
 def get_repository_state(
-        repo_url: str,
-        branch: str | None,
-        source_branch: str | None = None,
-        target_branch: str | None = None,
-        args: CliArguments = None,
-    ) -> RepoState:
+    repo_url: str,
+    branch: str | None,
+    source_branch: str | None = None,
+    target_branch: str | None = None,
+    args: CliArguments = None,
+) -> RepoState:
     repo_name = get_repo_name(repo_url)
     repo_owner = get_repo_owner(repo_url)
     repo_group = get_repo_group(repo_url)
@@ -61,7 +61,7 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
 
     if not args.source_branch:
         args.source_branch = to_kebab_case(args.commit_message)
-        print(f"\nGenerated source branch:  {args.source_branch}\n")
+        print(f'\nGenerated source branch:  {args.source_branch}\n')
 
     repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
