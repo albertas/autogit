@@ -61,9 +61,10 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
 
     if not args.branch:
         args.branch = to_kebab_case(args.commit_message)
-        print(
-            f'\033[1;32m|\033[0m {(f"New branch:  {args.branch}").ljust(75, " ")} \033[1;32m|\033[0m\n'
-        )
+        ## TODO print this when verbosity is turned on
+        # print(
+        #     f'\033[1;32m|\033[0m {(f"New branch:  {args.branch}").ljust(75, " ")} \033[1;32m|\033[0m\n'
+        # )
 
     repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
