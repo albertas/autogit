@@ -59,9 +59,9 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
         else:
             repo_urls.append(file_names_or_repo_url)
 
-    if not args.source_branch:
-        args.source_branch = to_kebab_case(args.commit_message)
-        print(f'\nGenerated source branch:  {args.source_branch}\n')
+    if not args.branch:
+        args.branch = to_kebab_case(args.commit_message)
+        print(f'\nGenerated branch name that will be used for the commit:  {args.branch}\n')
 
     repos: dict[str, RepoState] = {}
     for repo_url in repo_urls:
@@ -70,6 +70,7 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
             source_branch=args.source_branch,
             branch=args.branch,
             target_branch=args.target_branch,
+            args=args,
         )
         repos[repo_state.name] = repo_state
 
