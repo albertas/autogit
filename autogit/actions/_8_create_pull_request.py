@@ -33,7 +33,7 @@ def get_http_request_params_for_pull_request_creation(
         }
 
     else:  # Use gitlab.com API by default
-        project_id = f'{repo.group + "%2F" if repo.group else ""}{repo.owner}%2F{repo.name}'
+        project_id = repo.path.replace('/', '%2F')
         url = f'https://{repo.domain}/api/v4/projects/{project_id}/merge_requests'
         headers = {'PRIVATE-TOKEN': get_access_token(repo.url)}
         data = {

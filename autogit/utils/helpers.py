@@ -54,12 +54,9 @@ def get_repo_owner(url: str) -> str:
     return url.rsplit('/', 2)[-2]
 
 
-def get_repo_group(url: str) -> str | None:
-    group = url.rsplit('/', 3)[-3]
-    domain = get_domain(url)
-    if domain in group:
-        return None
-    return group
+def get_repo_path(url: str) -> str | None:
+    parsed_url = urlparse(url)
+    return parsed_url.path.lstrip('/').removesuffix('.git')
 
 
 def get_repo_name(url: str) -> str:

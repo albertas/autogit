@@ -36,7 +36,7 @@ class RepoState:
 
     name: str = ''  # Short human readable repo identifier
     owner: str = ''  # Owner of this repo
-    group: str | None = ''  # Group of this repo
+    path: str | None = ''  # Identifier of the repo: group/subgroup, owner and repo name
     url: str = ''  # Url used to clone the repository
     domain: str = ''  # Domain where the remote repository is hosted at (parsed from url)
     pull_request_url: str = ''  # Link to created pull request

@@ -5,32 +5,39 @@ from autogit.data_types import CliArguments
 
 
 @pytest.mark.parametrize(
-    ('repo_url', 'expected_name', 'expected_owner', 'expected_group', 'expected_domain'),
+    ('repo_url', 'expected_name', 'expected_owner', 'expected_path', 'expected_domain'),
     [
-        ('https://gitlab.com/myuser/myreponame.git', 'myreponame', 'myuser', None, 'gitlab.com'),
+        ('https://gitlab.com/myuser/myreponame.git', 'myreponame', 'myuser', 'myuser/myreponame', 'gitlab.com'),
         (
             'https://managedgit.com/mygroup/mynamespace/myreponame',
             'myreponame',
             'mynamespace',
-            'mygroup',
+            'mygroup/mynamespace/myreponame',
             'managedgit.com',
         ),
         (
             'https://managedgit.com/mygroup/mynamespace/myreponame.git',
             'myreponame',
             'mynamespace',
-            'mygroup',
+            'mygroup/mynamespace/myreponame',
+            'managedgit.com',
+        ),
+        (
+            'https://managedgit.com/mygroup/mysubgroup/mynamespace/myreponame.git',
+            'myreponame',
+            'mynamespace',
+            'mygroup/mysubgroup/mynamespace/myreponame',
             'managedgit.com',
         ),
     ],
 )
 def test_get_repository_state(
-    args, repo_url, expected_name, expected_owner, expected_group, expected_domain
+    args, repo_url, expected_name, expected_owner, expected_path, expected_domain
 ):
     repo_state = get_repository_state(repo_url, args=args)
     assert repo_state.name == expected_name
     assert repo_state.owner == expected_owner
-    assert repo_state.group == expected_group
+    assert repo_state.path == expected_path
     assert repo_state.domain == expected_domain
 
 

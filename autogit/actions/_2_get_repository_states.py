@@ -5,7 +5,7 @@ import os.path
 from autogit.data_types import CliArguments, RepoState
 from autogit.utils.helpers import (
     get_domain,
-    get_repo_group,
+    get_repo_path,
     get_repo_name,
     get_repo_owner,
     to_kebab_case,
@@ -31,14 +31,14 @@ def get_repository_state(
 ) -> RepoState:
     repo_name = get_repo_name(repo_url)
     repo_owner = get_repo_owner(repo_url)
-    repo_group = get_repo_group(repo_url)
+    repo_path = get_repo_path(repo_url)
     domain = get_domain(repo_url)
 
     return RepoState(
         args=args,
         name=repo_name,
         owner=repo_owner,
-        group=repo_group,
+        path=repo_path,
         url=repo_url,
         domain=domain,
         source_branch=args.source_branch,
