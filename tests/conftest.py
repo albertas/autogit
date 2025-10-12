@@ -1,6 +1,10 @@
+import shutil
+from pathlib import Path
+
 import pytest
 
-from autogit.data_types import CliArguments
+from autogit.actions._2_get_repository_states import get_repository_state
+from autogit.data_types import CliArguments, RepoState
 
 
 @pytest.fixture
@@ -15,7 +19,7 @@ def repos() -> list[str]:
 
 @pytest.fixture
 def clone_to() -> str:
-    return 'tmp'
+    return '/tmp/'
 
 
 @pytest.fixture
@@ -71,3 +75,21 @@ def args(
         branch=branch,
         target_branch=target_branch,
     )
+
+
+@pytest.fixture
+def url() -> str:
+    return 'https://gitlab.com/niekas/test_autogit.git'
+
+
+@pytest.fixture
+def repo(args, url) -> RepoState:
+    repo: RepoState = get_repository_state(repo_url=url, args=args)
+    return repo
+
+
+@pytest.fixture
+def remove_test_dir() -> None:
+    test_autogit_path = Path('/tmp/test_autogit')
+    if test_autogit_path.exists():
+        shutil.rmtree(test_autogit_path)

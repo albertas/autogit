@@ -27,9 +27,6 @@ def read_repositories_from_file(repos_filename: str) -> list[str]:
 
 def get_repository_state(
     repo_url: str,
-    branch: str | None,
-    source_branch: str | None = None,
-    target_branch: str | None = None,
     args: CliArguments = None,
 ) -> RepoState:
     repo_name = get_repo_name(repo_url)
@@ -44,9 +41,9 @@ def get_repository_state(
         group=repo_group,
         url=repo_url,
         domain=domain,
-        source_branch=source_branch,
-        branch=branch,
-        target_branch=target_branch,
+        source_branch=args.source_branch,
+        branch=args.branch,
+        target_branch=args.target_branch,
     )
 
 
@@ -61,7 +58,7 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
 
     if not args.branch:
         args.branch = to_kebab_case(args.commit_message)
-        ## TODO print this when verbosity is turned on
+        ## TODO: print this when verbosity is turned on
         # print(
         #     f'\033[1;32m|\033[0m {(f"New branch:  {args.branch}").ljust(75, " ")} \033[1;32m|\033[0m\n'
         # )
@@ -70,9 +67,6 @@ def get_repository_states(args: CliArguments) -> dict[str, RepoState]:
     for repo_url in repo_urls:
         repo_state = get_repository_state(
             repo_url=repo_url,
-            source_branch=args.source_branch,
-            branch=args.branch,
-            target_branch=args.target_branch,
             args=args,
         )
         repos[repo_state.name] = repo_state

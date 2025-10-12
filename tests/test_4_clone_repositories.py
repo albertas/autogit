@@ -15,8 +15,11 @@ from unittest.mock import patch
 import pytest
 
 from autogit.actions._4_clone_repositories import (
+    clone_repository,
     get_repo_access_url,
 )
+from autogit.constants import CloningStates
+from autogit.data_types import CliArguments, RepoState
 
 ## Methods to test:
 # def get_repo_access_url(url: str) -> str | None:
@@ -85,8 +88,69 @@ def test_get_repo_access_url(repo_url, expected_access_url):
         assert access_url == expected_access_url
 
 
-async def test_clone_repository(args):
-    pass
+@pytest.mark.parametrize(
+    (
+        'source_branch',
+        'target_branch',
+        'branch',
+        'default_branch',
+    ),
+    [
+        # Various branches exist/not when all branch names provided
+        ('source', 'target', 'branch', 'main'),
+        ('source_exists', 'target', 'branch', 'main'),
+        ('source', 'target_exists', 'branch', 'main'),
+        ('source', 'target', 'branch_exists', 'main'),
+        ('source', 'target_exists', 'branch_exists', 'main'),
+        ('source_exists', 'target', 'branch_exists', 'main'),
+        ('source_exists', 'target_exists', 'branch', 'main'),
+        ('source_exists', 'target_exists', 'branch_exists', 'main'),
+        # Various branches exist/not when target branch name not provided
+        ('source', None, 'branch', 'main'),
+        ('source_exists', None, 'branch', 'main'),
+        ('source', None, 'branch_exists', 'main'),
+        ('source_exists', None, 'branch_exists', 'main'),
+        # Various branches exist/not when target branch name not provided
+        (None, 'target', 'branch', 'main'),
+        (None, 'target_exists', 'branch', 'main'),
+        (None, 'target', 'branch_exists', 'main'),
+        (None, 'target_exists', 'branch_exists', 'main'),
+        # Various branches exist/not when branch name not provided
+        ('source', 'target', None, 'main'),
+        ('source_exists', 'target', None, 'main'),
+        ('source', 'target_exists', None, 'main'),
+        ('source_exists', 'target_exists', None, 'main'),
+        # Various branches exist/not when source/target branch names are not provided
+        (None, None, 'branch', 'main'),
+        (None, None, 'branch_exists', 'main'),
+        # Various branches exist/not when only target branch provided
+        (None, 'target', None, 'main'),
+        (None, 'target_exists', None, 'main'),
+        # Various branches exist/not when only source branch provided
+        ('source', None, None, 'main'),
+        ('source_exists', None, None, 'main'),
+        # Various branches exist/not when no branch names are provided
+        (None, None, None, 'main'),
+    ],
+)
+async def test_clone_repository(
+    args: CliArguments,
+    repo: RepoState,
+    remove_test_dir,
+    source_branch,
+    target_branch,
+    branch,
+    default_branch,
+):
+    # TODO: Should define fixtures that setup and clean Git repositories based on experiment result.
+    with patch('autogit.actions._4_clone_repositories.Path.exists', return_value=False):
+        # Could run it once in a ThrottledTasksExecutor and Mock Git later on.
+        await clone_repository(repo)
+        if source_branch == 'source' or (source_branch is None and target_branch == 'target'):
+            # Source branch does not exist - cannot use it as basis
+            assert repo.cloning_state == CloningStates.SOURCE_BRANCH_DOES_NOT_EXIST.value
+        else:
+            assert repo.cloning_state == CloningStates.CLONED.value
 
 
 def test_print_cloned_repositories():

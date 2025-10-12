@@ -1,4 +1,4 @@
-import os.path
+from pathlib import Path
 from urllib.parse import urlparse
 
 import git
@@ -27,7 +27,7 @@ def get_repo_access_url(url: str) -> str | None:
 async def clone_repository(repo: RepoState) -> None:
     """Clones repository with default (or source) branch."""
     clone_to = repo.args.clone_to
-    repo.directory = os.path.join(clone_to, repo.name)
+    repo.directory = str(Path(clone_to) / repo.name)
     repo.target_branch = repo.target_branch or get_default_branch(repo)
     repo.source_branch = repo.source_branch or repo.target_branch
 
@@ -37,10 +37,9 @@ async def clone_repository(repo: RepoState) -> None:
     # TODO: add ssh support: urls like git@gitlab.com:niekas/gitlab-api-tests.git
 
     try:
-        if os.path.exists(
-            repo.directory
-        ):  # If repository exists: clean it, pull changes, checkout default branch
-            g = Git(repo.directory)
+        if Path(repo.directory).exists():
+            # If repository exists: clean it, pull changes, checkout default branch
+            g: Git = Git(repo.directory)
             g.clean('-dfx')
             g.execute(['git', 'fetch', '--all'])
 
@@ -48,16 +47,19 @@ async def clone_repository(repo: RepoState) -> None:
 
             repo.cloning_state = CloningStates.CLONED.value
         elif repo_access_url := get_repo_access_url(repo.url):
-            git.Repo.clone_from(repo_access_url, repo.directory)
+            Path(repo.directory).mkdir(parents=True)
+            git.Repo.clone_from(url=repo_access_url, to_path=repo.directory)
 
             g = Git(repo.directory)
             g.execute(['git', 'fetch', '--all'])
 
             source_branch = repo.source_branch or repo.target_branch or get_default_branch(repo)
-            # TODO: check if this branch exist - if not - show nice error message and abort whole action
-            g.checkout(source_branch)
-
-            repo.cloning_state = CloningStates.CLONED.value
+            try:
+                g.checkout(source_branch)
+            except git.exc.GitCommandError:
+                repo.cloning_state = CloningStates.SOURCE_BRANCH_DOES_NOT_EXIST.value
+            else:
+                repo.cloning_state = CloningStates.CLONED.value
         else:
             repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
 

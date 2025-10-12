@@ -1,5 +1,4 @@
-"""
-Action:
+"""Action:
 - Parse domain names from provided list of repositories.
 - Detect known Access Tokens from environment variables.
 - Detect for each domain if it is Github or Gitlab and API version.
@@ -14,14 +13,14 @@ Returns:
         "type": "Gitlab|Github",
     }
  }
+
 """
 
 from autogit.data_types import RepoState
 
 
 def get_tokens_and_api_versions(repos: dict[str, RepoState]) -> None:
-    """
-    :return: domains = {
+    """:return: domains = {
       "<domain_name>": {
         "token": "<token>",
         "api_version": "<version>",
@@ -43,13 +42,6 @@ def get_tokens_and_api_versions(repos: dict[str, RepoState]) -> None:
     # 'GIT_TOKEN': '<GIT_TOKEN>',
     # 'GIT_ACCESS_TOKEN': '<GIT_TOKEN>',
     # 'GIT_OAUTH_TOKEN': '<GIT_TOKEN>',
-    pass
 
 
 # curl --header "PRIVATE-TOKEN: personal-access-token" your-gitlab-url/api/v4/version
-
-
-
-
-
-
