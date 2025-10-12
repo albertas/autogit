@@ -36,11 +36,13 @@ test = [
     "pip-audit",
     "deadcode",
     "pytest",
+    "pytest-asyncio",
     "pytest-cov",
 ]
 
 [tool.pytest.ini_options]
 addopts = "--cov=. --no-cov-on-fail --cov-fail-under=50.0"
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["hatchling"]
