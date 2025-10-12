@@ -1,16 +1,10 @@
-run: venv312
-	venv312/bin/autogit --target-branch=target --clone-to=tmp -r repos.txt hello.py
-	# venv312/bin/autogit --source-branch=source --target-branch=target --clone-to=tmp -r repos.txt hello.py
-	# venv312/bin/autogit --clone-to=tmp -r repos.txt hello.py
-	# venv312/bin/autogit -r repos.txt hello.py
+1: venv312
+	autogit -r repos.txt add_hello_to_readme.py
 
-update:
-	venv312/bin/pip uninstall autogit
-	venv312/bin/pip install autogit
+2: venv312
+	autogit -r repos.txt -m "Bump Python version 2" bump_python_version.py
+
 
 venv312:
 	python3.12 -m venv venv312
 	venv312/bin/pip install autogit>=0.0.26
-
-clean:
-	rm -fr venv312

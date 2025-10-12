@@ -99,9 +99,9 @@ async def test_clone_repository():
     pass
 
 
-async def test_print_cloned_repositories():
+def test_print_cloned_repositories():
     pass
 
 
-async def test_clone_repositories():
+def test_clone_repositories():
     pass
