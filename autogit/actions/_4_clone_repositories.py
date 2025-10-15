@@ -85,9 +85,14 @@ def print_cloned_repositories(repos):
                     f'\033[1;32m\033[0m {(repo.url + " " + CloningStates.CLONED.value).ljust(77, " ")} \033[1;32m\033[0m'
                 )
 
+def were_all_repositories_clonned_successfully(repos: dict[str, RepoState]) -> bool:
+    return all(repo.cloning_state == CloningStates.CLONED.value for repo in repos.values())
 
-def clone_repositories(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> None:
+
+def clone_repositories(repos: dict[str, RepoState], executor: ThrottledTasksExecutor) -> bool:
+    """:return: were all repositories clonned successfully."""
     for repo in repos.values():
         executor.run(clone_repository(repo))
     executor.wait_for_tasks_to_finish()
     print_cloned_repositories(repos)
+    return were_all_repositories_clonned_successfully(repos)
