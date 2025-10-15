@@ -41,8 +41,9 @@ async def clone_repository(repo: RepoState) -> None:
         directory = Path(repo.directory)
         if directory.exists():
             if directory.iterdir() and not (Path(repo.directory) / '.git/').exists():
-                print_failure('This is not a Git directory (wanted to repo into it): {repo.directory}')
-                sys.exit()
+                print_failure(f'This is not a Git directory (wanted to clone to it): {repo.directory}')
+                repo.cloning_state = CloningStates.DIRECTORY_NOT_EMPTY.value
+                return
 
             # If repository exists: clean it, pull changes, checkout default branch
             g: Git = Git(repo.directory)

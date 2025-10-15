@@ -15,6 +15,7 @@ class CloningStates(Enum):
     CLONED = 'CLONED'
     NOT_FOUND = 'NOT_FOUND'
     SKIPPED = 'SKIPPED'
+    DIRECTORY_NOT_EMPTY = 'DIRECTORY_NOT_EMPTY'
 
 
 class PullRequestStates(Enum):
