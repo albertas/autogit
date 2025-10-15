@@ -65,6 +65,7 @@ def get_repo_name(url: str) -> str:
 
 
 def get_default_branch(repo: RepoState):
+    # Local Git directory repo.direcotry must exists, otherwise exception will be raised
     g = Git(repo.directory)
     default_branch_name: str = g.execute(['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'])  # type: ignore
     return default_branch_name.split('/', 1)[-1]  # removes `origin/` prefix from the result
