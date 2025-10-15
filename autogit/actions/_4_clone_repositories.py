@@ -90,11 +90,11 @@ def print_cloned_repositories(repos):
         else:
             should_print_not_cloned_repos = True
     if should_print_not_cloned_repos:
-        print('\033[1;32m' + 'Did NOT clone these repositories:'.center(79, '-') + '\033[0m')
+        print('\033[1;33m' + 'Did NOT clone these repositories:'.center(79, ' ') + '\033[0m')
         for repo in repos.values():
-            if repo.cloning_state != repo.cloning_state:
+            if repo.cloning_state != CloningStates.CLONED.value:
                 print(
-                    f'\033[1;32m\033[0m {(repo.url + " " + CloningStates.CLONED.value).ljust(77, " ")} \033[1;32m\033[0m'
+                    f'\033[1;33m {(repo.url + " " + CloningStates.CLONED.value).ljust(77, " ")} \033[0m'
                 )
 
 def were_all_repositories_clonned_successfully(repos: dict[str, RepoState]) -> bool:
