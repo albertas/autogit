@@ -40,10 +40,11 @@ async def clone_repository(repo: RepoState) -> None:
     try:
         directory = Path(repo.directory)
         if directory.exists():
-            if directory.iterdir() and not (Path(repo.directory) / '.git/').exists():
-                print_failure(f'This is not a Git directory (wanted to clone to it): {repo.directory}')
-                repo.cloning_state = CloningStates.DIRECTORY_NOT_EMPTY.value
-                return
+            ## TODO: check if directory exist
+            # if directory.iterdir() and not (Path(repo.directory) / '.git/').exists():
+            #     print_failure(f'This is not a Git directory (wanted to clone to it): {repo.directory}')
+            #     repo.cloning_state = CloningStates.DIRECTORY_NOT_EMPTY.value
+            #     return
 
             # If repository exists: clean it, pull changes, checkout default branch
             g: Git = Git(repo.directory)
@@ -94,7 +95,7 @@ def print_cloned_repositories(repos):
         for repo in repos.values():
             if repo.cloning_state != CloningStates.CLONED.value:
                 print(
-                    f'\033[1;33m {(repo.url + " " + CloningStates.CLONED.value).ljust(77, " ")} \033[0m'
+                    f'{(repo.url + " \033[1;33m" + repo.cloning_state).ljust(77, " ")} \033[0m'
                 )
 
 def were_all_repositories_clonned_successfully(repos: dict[str, RepoState]) -> bool:
