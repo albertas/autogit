@@ -3,7 +3,7 @@ from logging import getLogger
 
 import httpx
 
-from autogit.constants import PullRequestStates
+from autogit.constants import ModificationState, PullRequestStates
 from autogit.data_types import HttpRequestParams, RepoState
 from autogit.utils.helpers import get_access_token
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
@@ -38,9 +38,10 @@ def get_http_request_params_for_pull_request_creation(
         headers = {'PRIVATE-TOKEN': get_access_token(repo.url)}
         data = {
             'source_branch': repo.branch,
-            'target_branch': repo.target_branch,
             'title': repo.args.commit_message,
         }
+        if repo.target_branch:
+            data['target_branch'] = repo.target_branch
     return HttpRequestParams(
         url=url,
         headers=headers,
@@ -89,6 +90,7 @@ def create_pull_request_for_each_repo(
     repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
-        executor.run(create_pull_request(repo))
+        if repo.modification_state == ModificationState.MODIFIED.value:
+            executor.run(create_pull_request(repo))
     executor.wait_for_tasks_to_finish()
     print_pull_requests(repos)
