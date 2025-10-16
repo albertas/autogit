@@ -30,7 +30,7 @@ def get_repo_access_url(url: str) -> str | None:
 async def clone_repository(repo: RepoState) -> None:
     """Clones repository with default (or source) branch."""
     clone_to = repo.args.clone_to
-    repo.directory = str(Path(clone_to) / repo.name).expanduser()
+    repo.directory = str((Path(clone_to) / repo.name).expanduser())
 
     # TODO: add a way to clone using access token: https://stackoverflow.com/questions/25409700/using-gitlab-token-to-clone-without-authentication/29570677#29570677
     # git clone https://:YOURKEY@your.gilab.company.org/group/project.git
