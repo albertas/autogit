@@ -28,6 +28,7 @@ https://gitlab.com/<handle>/<repo-title2>.git
 https://gitlab.com/<group>/<namespace>/<repo-title3>
 https://github.com/<handle>/<repo-title4>
 https://yourmanagedgit.com/<handle>/<repo-title5>
+# https://yourmanagedgit.com/<handle>/<repo-title6> - this line is commented out
 ```
 
 Try it yourself:

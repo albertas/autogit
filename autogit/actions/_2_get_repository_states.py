@@ -22,7 +22,21 @@ def is_url_or_git(file_names_or_repo_url: str) -> bool:
 def read_repositories_from_file(repos_filename: str) -> list[str]:
     """Reads a list of repositories from a file while ignoring commented out lines."""
     with open(repos_filename) as f:
-        return [line.strip() for line in f if not line.strip().startswith('#')]
+        urls = []
+        for url_line_with_comment in f:
+            if not url_line_with_comment.strip().startswith('#'):
+                if (
+                    not url_line_with_comment.strip().startswith('"')
+                    and not url_line_with_comment.strip().startswith("'")
+                ):
+                    url = url_line_with_comment.split('#', 1)[0]
+                else:
+                    # TODO: quote detection and removal could be more sophisticated and accurate
+                    # Comments could be supported for URLs with quotes
+                    url = url_line_with_comment.strip("'\"")
+                urls.append(url.strip())
+
+        return urls
 
 
 def get_repository_state(
