@@ -1,3 +1,3 @@
 """autogit is a command line tool for updating multiple GitLab or GitHub repositories with a single command."""
 
-__version__ = '0.0.40'
+__version__ = '0.0.41'
