@@ -51,7 +51,7 @@ class RepoState:
             return '⌛'
         if self.cloning_state == CloningStates.CLONED.value:
             return '✅'
-        return f'❌ {self.cloning_state.replace("_", " ").title()}'
+        return f'❌ \033[1;33m{self.cloning_state.replace("_", " ").title()}\033[0m'
 
 
 @dataclass
