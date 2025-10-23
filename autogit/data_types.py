@@ -45,6 +45,14 @@ class RepoState:
     stdout: bytes = b''  # Standard output from command execution
     stderr: bytes = b''  # Standard error output from command execution
 
+    @property
+    def cloning_state_label(self) -> str:
+        if self.cloning_state == CloningStates.NOT_STARTED.value:
+            return '⌛'
+        if self.cloning_state == CloningStates.CLONED.value:
+            return '✅'
+        return f'❌ {self.cloning_state.replace("_", " ").title()}'
+
 
 @dataclass
 class HttpRequestParams:

@@ -86,11 +86,11 @@ async def create_pull_request(repo: RepoState) -> None:
             repo.pull_request_reason = json.dumps(response.json())
 
 
-def create_pull_request_for_each_repo(
+async def create_pull_request_for_each_repo(
     repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         if repo.modification_state == ModificationState.MODIFIED.value:
             executor.run(create_pull_request(repo))
-    executor.wait_for_tasks_to_finish()
+    await executor.async_wait_for_tasks_to_finish()
     print_pull_requests(repos)

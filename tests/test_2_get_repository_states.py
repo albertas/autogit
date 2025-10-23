@@ -7,7 +7,13 @@ from autogit.data_types import CliArguments
 @pytest.mark.parametrize(
     ('repo_url', 'expected_name', 'expected_owner', 'expected_path', 'expected_domain'),
     [
-        ('https://gitlab.com/myuser/myreponame.git', 'myreponame', 'myuser', 'myuser/myreponame', 'gitlab.com'),
+        (
+            'https://gitlab.com/myuser/myreponame.git',
+            'myreponame',
+            'myuser',
+            'myuser/myreponame',
+            'gitlab.com',
+        ),
         (
             'https://managedgit.com/mygroup/mynamespace/myreponame',
             'myreponame',

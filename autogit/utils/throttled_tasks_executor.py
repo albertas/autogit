@@ -47,6 +47,14 @@ class ThrottledTasksExecutor:
         self.wait_for_tasks_to_finish()
         self.stop()
 
+    async def __aenter__(self) -> 'ThrottledTasksExecutor':
+        self.start()
+        return self
+
+    async def __aexit__(self, *exc_info) -> None:
+        await self.async_wait_for_tasks_to_finish()
+        self.stop()
+
     def start(self, in_separate_process: bool | None = None) -> None:
         """Starts a thread (or a process), which executes coroutines provided to the ThrottledTasksExecutor."""
         if in_separate_process is None:

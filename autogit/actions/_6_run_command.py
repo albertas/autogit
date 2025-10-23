@@ -28,9 +28,9 @@ async def run_command(repo: RepoState) -> None:
         repo.modification_state = ModificationState.MODIFIED.value
 
 
-def run_command_for_each_repo(
+async def run_command_for_each_repo(
     repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run_not_throttled(run_command(repo))
-    executor.wait_for_tasks_to_finish()
+    await executor.async_wait_for_tasks_to_finish()

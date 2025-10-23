@@ -25,15 +25,14 @@ def read_repositories_from_file(repos_filename: str) -> list[str]:
         urls = []
         for url_line_with_comment in f:
             if not url_line_with_comment.strip().startswith('#'):
-                if (
-                    not url_line_with_comment.strip().startswith('"')
-                    and not url_line_with_comment.strip().startswith("'")
-                ):
+                if not url_line_with_comment.strip().startswith(
+                    '"'
+                ) and not url_line_with_comment.strip().startswith("'"):
                     url = url_line_with_comment.split('#', 1)[0]
                 else:
                     # TODO: quote detection and removal could be more sophisticated and accurate
                     # Comments could be supported for URLs with quotes
-                    url = url_line_with_comment.strip("'\"")
+                    url = url_line_with_comment.strip('\'"')
                 urls.append(url.strip())
 
         return urls

@@ -31,9 +31,9 @@ async def create_branch(repo: RepoState) -> None:
         g.execute(['git', 'pull', 'origin', repo.branch])
 
 
-def create_branch_for_each_repo(
+async def create_branch_for_each_repo(
     repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run_not_throttled(create_branch(repo))
-    executor.wait_for_tasks_to_finish()
+    await executor.async_wait_for_tasks_to_finish()

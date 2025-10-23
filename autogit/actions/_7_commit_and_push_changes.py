@@ -55,10 +55,10 @@ def print_modified_repositories(repos: dict[str, RepoState]):
                 print(repo.stderr)
 
 
-def commit_and_push_changes_for_each_repo(
+async def commit_and_push_changes_for_each_repo(
     repos: dict[str, RepoState], executor: ThrottledTasksExecutor
 ) -> None:
     for repo in repos.values():
         executor.run(commit_and_push_changes(repo))
-    executor.wait_for_tasks_to_finish()
+    await executor.async_wait_for_tasks_to_finish()
     print_modified_repositories(repos)
