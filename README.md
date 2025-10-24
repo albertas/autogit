@@ -65,6 +65,15 @@ These options could be used to specify more details:
 | `--repo`           | Link to repository | String | No |
 | `--repos`          | Filename which contains a list of repository links | String | No |
 
+
+Options to be added in the future releases:
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Description | Type | Required |
+| `--pr-title`     | Title of the Pull Request (commit message is used by default) | String | No |
+| `--pr-description`     | Pull Request description in Markdown format (empty by default) | String | No |
+| `--pr-reviewers`     | Comma separated list of usernames to assign as reviewers in newly created Pull Requests | String | No |
+| `--stop-on-failure`          | Exits immediately when an issue for at least one repo is detected (tries to create any possible PR by default, even if some repos failed to be processed) | Boolean | No |
+| `--max-api-concurrency`     | Max number of concurrent API requests (default 2) | Int | No |
+
 More examples:
 
 ```bash

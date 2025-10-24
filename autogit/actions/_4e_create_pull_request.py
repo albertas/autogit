@@ -49,24 +49,6 @@ def get_http_request_params_for_pull_request_creation(
     )
 
 
-def print_pull_requests(repos):
-    print('\n\033[1;32m' + 'Created Pull Requests'.center(79, ' ') + '\033[0m')
-    show_not_created_pull_requests = False
-    for repo in repos.values():
-        if repo.pull_request_state == PullRequestStates.CREATED.value:
-            print(f'\033[1;32m\033[0m {repo.pull_request_url.ljust(77, " ")} \033[1;32m\033[0m')
-        else:
-            show_not_created_pull_requests = True
-    if show_not_created_pull_requests:
-        print('\033[1;32m' + 'Not created Pull Requests'.center(79, ' ') + '\033[0m')
-        for repo in repos.values():
-            if repo.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
-                print(f'\033[1;32m\033[0m {repo.url.ljust(77, " ")} \033[1;32m\033[0m')
-                print(
-                    f'\033[1;32m\033[0m   status_code={repo.pull_request_status_code} reason={repo.pull_request_reason} \033[1;32m\033[0m'
-                )
-
-
 async def create_pull_request(repo: RepoState) -> None:
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
     request_params = get_http_request_params_for_pull_request_creation(repo)
@@ -84,13 +66,3 @@ async def create_pull_request(repo: RepoState) -> None:
             repo.pull_request_state = PullRequestStates.GOT_BAD_RESPONSE.value
             repo.pull_request_status_code = response.status_code
             repo.pull_request_reason = json.dumps(response.json())
-
-
-async def create_pull_request_for_each_repo(
-    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
-) -> None:
-    for repo in repos.values():
-        if repo.modification_state == ModificationState.MODIFIED.value:
-            executor.run(create_pull_request(repo))
-    await executor.async_wait_for_tasks_to_finish()
-    print_pull_requests(repos)

@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 import pytest
 
-from autogit.actions._4_clone_repositories import (
+from autogit.actions._41_clone_repositories import (
     clone_repository,
     get_repo_access_url,
 )

@@ -30,7 +30,7 @@ class RepoState:
 
     cloning_state: str = CloningStates.NOT_STARTED.value
     modification_state: str = ModificationState.NOT_STARTED.value
-    pull_request_state: str = PullRequestStates.NOT_CREATED.value
+    pull_request_state: str = PullRequestStates.NOT_STARTED.value
     pull_request_status_code: int | None = None
     pull_request_reason: str | None = None
 
@@ -48,10 +48,40 @@ class RepoState:
     @property
     def cloning_state_label(self) -> str:
         if self.cloning_state == CloningStates.NOT_STARTED.value:
+            return ''
+        if self.cloning_state == CloningStates.CLONING.value:
             return '⌛'
         if self.cloning_state == CloningStates.CLONED.value:
             return '✅'
         return f'❌ \033[1;33m{self.cloning_state.replace("_", " ").title()}\033[0m'
+
+    @property
+    def modification_state_label(self) -> str:
+        if self.modification_state == ModificationState.NOT_STARTED.value:
+            return ''
+        if self.modification_state == ModificationState.MODIFYING.value:
+            return '⌛ Applying changes'
+        if self.modification_state == ModificationState.MODIFIED.value:
+            return '⌛ Applied changes'
+        if self.modification_state == ModificationState.NO_FILES_CHANGED.value:
+            return '✅ No files changed'
+        if self.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
+            return '✅ Pushed changes to remote'
+        if self.modification_state == ModificationState.GOT_EXCEPTION.value:
+            return f'❌ \033[1;33m{self.modification_state.replace("_", " ").title()}\033[0m'
+        return '❌ Modification state display failure'
+
+    @property
+    def pull_request_state_label(self) -> str:
+        if self.pull_request_state == PullRequestStates.NOT_STARTED.value:
+            return ''
+        if self.pull_request_state == PullRequestStates.CREATING.value:
+            return '⌛ Creating PR'
+        if self.pull_request_state == PullRequestStates.CREATED.value:
+            return '✅ Created PR'
+        if self.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
+            return f'❌ \033[1;33mPR {self.pull_request_state.replace("_", " ").title()}\033[0m  {self.pull_request_status_code} {self.pull_request_reason}'
+        return '❌ PR state display failure'
 
 
 @dataclass

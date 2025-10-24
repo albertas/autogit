@@ -29,11 +29,3 @@ async def create_branch(repo: RepoState) -> None:
 
     with contextlib.suppress(git.exc.GitCommandError):
         g.execute(['git', 'pull', 'origin', repo.branch])
-
-
-async def create_branch_for_each_repo(
-    repos: dict[str, RepoState], executor: ThrottledTasksExecutor
-) -> None:
-    for repo in repos.values():
-        executor.run_not_throttled(create_branch(repo))
-    await executor.async_wait_for_tasks_to_finish()
