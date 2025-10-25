@@ -3,10 +3,9 @@ from logging import getLogger
 
 import httpx
 
-from autogit.constants import ModificationState, PullRequestStates
+from autogit.constants import PullRequestStates
 from autogit.data_types import HttpRequestParams, RepoState
 from autogit.utils.helpers import get_access_token
-from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 logger = getLogger()
 
@@ -49,7 +48,13 @@ def get_http_request_params_for_pull_request_creation(
     )
 
 
-async def create_pull_request(repo: RepoState) -> None:
+async def create_pull_request(repo: RepoState) -> bool:
+    """Create pull request.
+
+    :return: bool - was pull request created successfully.
+    """
+    repo.pull_request_state = PullRequestStates.CREATING.value
+
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
     request_params = get_http_request_params_for_pull_request_creation(repo)
 
@@ -66,3 +71,8 @@ async def create_pull_request(repo: RepoState) -> None:
             repo.pull_request_state = PullRequestStates.GOT_BAD_RESPONSE.value
             repo.pull_request_status_code = response.status_code
             repo.pull_request_reason = json.dumps(response.json())
+
+    return repo.pull_request_state in [
+        PullRequestStates.CREATED.value,
+        PullRequestStates.MERGED.value,
+    ]

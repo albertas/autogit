@@ -18,19 +18,36 @@ class CloningStates(Enum):
     DIRECTORY_NOT_EMPTY = 'DIRECTORY_NOT_EMPTY'
 
 
+class BranchCreationState(Enum):
+    NOT_STARTED = 'NOT_STARTED'  # Initial
+    CREATING = 'CREATING'  # Pending
+    CREATED = 'CREATED'  # Good
+    SWITCHED_TO_EXISTING = 'SWITCHED_TO_EXISTING'  # Good
+    FAILED_TO_CREATE_BRANCH = 'FAILED_TO_CREATE_BRANCH'  # Bad
+    FAILED_TO_PULL_CHANGES = 'FAILED_TO_PULL_CHANGES'  # Bad
+
+
 class ModificationState(Enum):
-    NOT_STARTED = 'NOT_STARTED'
-    GOT_EXCEPTION = 'GOT_EXCEPTION'
-    MODIFYING = 'MODIFYING'
-    MODIFIED = 'MODIFIED'
-    NO_FILES_CHANGED = 'NO_FILES_CHANGED'
-    PUSHED_TO_REMOTE = 'PUSHED_TO_REMOTE'
+    NOT_STARTED = 'NOT_STARTED'  # Initial
+    MODIFYING = 'MODIFYING'  # Pending
+    MODIFIED = 'MODIFIED'  # Good
+    GOT_EXCEPTION = 'GOT_EXCEPTION'  # Bad
+
+
+class PushToRemoteState(Enum):
+    # TODO: should have separate state for pushing to remote states
+    NOT_STARTED = 'NOT_STARTED'  # Initial
+    COMMITING = 'COMMITING'  # Pending
+    PUSHING_TO_REMOTE = 'PUSHING_TO_REMOTE'  # Pending
+    PUSHED_TO_REMOTE = 'PUSHED_TO_REMOTE'  # Good
+    NO_FILES_CHANGED = 'NO_FILES_CHANGED'  # Bad
+    FAILED_TO_PUSH_TO_REMOTE = 'FAILED_TO_PUSH_TO_REMOTE'  # Bad
 
 
 class PullRequestStates(Enum):
-    NOT_STARTED = 'NOT_STARTED'
-    NOT_CREATED = 'NOT_CREATED'
-    CREATING = 'CREATING'
-    CREATED = 'CREATED'
-    GOT_BAD_RESPONSE = 'GOT_BAD_RESPONSE'
-    MERGED = 'MERGED'
+    NOT_STARTED = 'NOT_STARTED'  # Initial
+    CREATING = 'CREATING'  # Pending
+    CREATED = 'CREATED'  # Good
+    GOT_BAD_RESPONSE = 'GOT_BAD_RESPONSE'  # Bad
+    NOT_CREATED = 'NOT_CREATED'  # Bad
+    MERGED = 'MERGED'  # Good

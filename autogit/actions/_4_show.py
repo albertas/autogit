@@ -1,5 +1,4 @@
-"""
-Display PR creation progress interactively in the terminal.
+"""Display PR creation progress interactively in the terminal.
 Show repository link and PR creation state that is being executed right now.
 
 Key features of this file are:
@@ -7,6 +6,17 @@ Key features of this file are:
  - group repo PR creation state display rerendered based on repos state.
  - display repo PR creation states until all executor tasks are finished.
 """
+
+import asyncio
+
+from rich.console import Console, Group
+from rich.live import Live
+from rich.text import Text
+
+from autogit.constants import PullRequestStates
+from autogit.data_types import RepoState
+from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
+
 
 def get_repo_state_line(repo: RepoState):
     state_line = f'{repo.url}  '
@@ -25,10 +35,15 @@ def get_repo_state_line(repo: RepoState):
     # TODO: Percent % and gray text was being done for that repository right now.
     # Error should be shown in Yellow/White.
 
+    # Push_to_remote_state_label
     if pull_request_state_label := repo.pull_request_state_label:
         state_line += pull_request_state_label
+    elif push_to_remote_state_label := repo.push_to_remote_state_label:
+        state_line += push_to_remote_state_label
     elif modification_state_label := repo.modification_state_label:
         state_line += modification_state_label
+    elif branch_creation_state_label := repo.branch_creation_state_label:
+        state_line += branch_creation_state_label
     elif cloning_state_label := repo.cloning_state_label:
         state_line += cloning_state_label
 
@@ -59,6 +74,13 @@ def show_pull_requests(repos):
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
             print(f'\033[1;32m\033[0m {repo.pull_request_url.ljust(77, " ")} \033[1;32m\033[0m')
+
+
+def show_exception_file_paths(repos):
+    print('\n\033[1;31m' + 'Exception logs were written to these files:'.center(79, ' ') + '\033[0m')
+    for repo in repos.values():
+        if repo.exception_file_path:
+            print(f'{repo.exception_file_path.ljust(77, " ")}')
 
 
 def show_failure(message: str) -> None:

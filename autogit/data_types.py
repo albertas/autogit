@@ -1,6 +1,12 @@
 from dataclasses import dataclass
 
-from autogit.constants import CloningStates, ModificationState, PullRequestStates
+from autogit.constants import (
+    BranchCreationState,
+    CloningStates,
+    ModificationState,
+    PullRequestStates,
+    PushToRemoteState,
+)
 
 
 @dataclass
@@ -29,7 +35,9 @@ class RepoState:
     target_branch: str = ''  # Base branch into which PR changes will be pulled
 
     cloning_state: str = CloningStates.NOT_STARTED.value
+    branch_creation_state: str = BranchCreationState.NOT_STARTED.value
     modification_state: str = ModificationState.NOT_STARTED.value
+    push_to_remote_state: str = PushToRemoteState.NOT_STARTED.value
     pull_request_state: str = PullRequestStates.NOT_STARTED.value
     pull_request_status_code: int | None = None
     pull_request_reason: str | None = None
@@ -41,6 +49,7 @@ class RepoState:
     domain: str = ''  # Domain where the remote repository is hosted at (parsed from url)
     pull_request_url: str = ''  # Link to created pull request
     directory: str = ''  # Repository path in the file system
+    exception_file_path: str = ''  # Repository path in the file system
 
     stdout: bytes = b''  # Standard output from command execution
     stderr: bytes = b''  # Standard error output from command execution
@@ -52,11 +61,28 @@ class RepoState:
         if self.cloning_state == CloningStates.CLONING.value:
             return '⌛'
         if self.cloning_state == CloningStates.CLONED.value:
-            return '✅'
-        return f'❌ \033[1;33m{self.cloning_state.replace("_", " ").title()}\033[0m'
+            return '✅ \033[1;32mCloned\033[0m'
+        return f'❌ \033[1;33m{self.cloning_state.replace("_", " ").capitalize()}\033[0m'
 
     @property
-    def modification_state_label(self) -> str:
+    def branch_creation_state_label(self) -> str:
+        if self.branch_creation_state == BranchCreationState.NOT_STARTED.value:
+            return ''
+        if self.branch_creation_state == BranchCreationState.CREATING.value:
+            return '⌛ Applying changes'
+        if self.branch_creation_state == BranchCreationState.CREATED.value:
+            return '✅ \033[1;32mBranch created\033[0m'
+        if self.branch_creation_state == BranchCreationState.SWITCHED_TO_EXISTING.value:
+            return '✅ \033[1;32mSwitched to existing branch\033[0m'
+        if self.branch_creation_state in [
+            BranchCreationState.FAILED_TO_CREATE_BRANCH.value,
+            BranchCreationState.FAILED_TO_PULL_CHANGES.value,
+        ]:
+            return f'❌ \033[1;33m{self.branch_creation_state.replace("_", " ").capitalize()}\033[0m'
+        return f'❌ {self.branch_creation_state.replace("_", " ").capitalize()} Modification state display failure'
+
+    @property
+    def modification_state_label(self) -> str:  # noqa: PLR0911
         if self.modification_state == ModificationState.NOT_STARTED.value:
             return ''
         if self.modification_state == ModificationState.MODIFYING.value:
@@ -64,12 +90,33 @@ class RepoState:
         if self.modification_state == ModificationState.MODIFIED.value:
             return '⌛ Applied changes'
         if self.modification_state == ModificationState.NO_FILES_CHANGED.value:
-            return '✅ No files changed'
+            return '✅ \033[1;32mNo files changed\033[0m'
         if self.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
-            return '✅ Pushed changes to remote'
+            return '✅ \033[1;32mPushed changes to remote\033[0m'
         if self.modification_state == ModificationState.GOT_EXCEPTION.value:
-            return f'❌ \033[1;33m{self.modification_state.replace("_", " ").title()}\033[0m'
-        return '❌ Modification state display failure'
+            return f'❌ \033[1;33m{self.modification_state.replace("_", " ").capitalize()}\033[0m'
+        return f'❌ {self.modification_state.replace("_", " ").capitalize()} Modification state display failure'
+
+    @property
+    def push_to_remote_state_label(self) -> str:
+        state = self.push_to_remote_state.capitalize().replace('_', ' ')
+        if self.push_to_remote_state == PushToRemoteState.NOT_STARTED.value:
+            label = ''
+        elif self.push_to_remote_state in [
+            ModificationState.COMMITING.value,
+            ModificationState.PUSHING_TO_REMOTE.value,
+        ]:
+            label = f'⌛ {state}'
+        elif self.push_to_remote_state == ModificationState.PUSHED_TO_REMOTE.value:
+            label = f'✅ \033[1;32m{state}\033[0m'
+        elif self.push_to_remote_state in [
+            ModificationState.NO_FILES_CHANGED.value,
+            ModificationState.FAILED_TO_PUSH_TO_REMOTE.value,
+        ]:
+            label = f'❌ \033[1;33m{state}\033[0m'
+        else:
+            label = f'❌ {state} Modification state display failure'
+        return label
 
     @property
     def pull_request_state_label(self) -> str:
@@ -78,10 +125,10 @@ class RepoState:
         if self.pull_request_state == PullRequestStates.CREATING.value:
             return '⌛ Creating PR'
         if self.pull_request_state == PullRequestStates.CREATED.value:
-            return '✅ Created PR'
+            return '✅ \033[1;32mCreated PR\033[0m'
         if self.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
-            return f'❌ \033[1;33mPR {self.pull_request_state.replace("_", " ").title()}\033[0m  {self.pull_request_status_code} {self.pull_request_reason}'
-        return '❌ PR state display failure'
+            return f'❌ \033[1;33mPR {self.pull_request_state.replace("_", " ").capitalize()}\033[0m  {self.pull_request_status_code} {self.pull_request_reason}'
+        return f'❌ {self.pull_request_state.replace("_", " ").capitalize()} PR state display failure'
 
 
 @dataclass

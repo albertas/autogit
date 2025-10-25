@@ -1,2 +1,2 @@
 https://gitlab.com/niekas/example
-https://gitlab.com/niekas/jsonstate.git
+https://gitlab.com/niekas/example_does_not_exist

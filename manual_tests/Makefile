@@ -1,7 +1,10 @@
-1: venv312
+# TODO: these should be automated end to end tests that test various flows for both Gitlab and Github.
+
+
+1: clean venv312
 	venv312/bin/autogit -r repos.txt add_hello_to_readme.py
 
-2: venv312
+2: clean venv312
 	venv312/bin/autogit -r repos.txt -m "Bump Python version 2" bump_python_version.py
 
 

@@ -1,19 +1,14 @@
-import asyncio
 from pathlib import Path
 from urllib.parse import urlparse
 
 import git
 from git.cmd import Git
 from git.exc import GitCommandError
-from rich.console import Console, Group
-from rich.live import Live
-from rich.text import Text
 
+from autogit.actions._4_show import show_failure
 from autogit.constants import CloningStates
 from autogit.data_types import RepoState
 from autogit.utils.helpers import get_access_token, get_default_branch
-from autogit.utils._5_show import show_failure
-from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
 
 def get_repo_access_url(url: str) -> str | None:
@@ -29,8 +24,13 @@ def get_repo_access_url(url: str) -> str | None:
     return None
 
 
-async def clone_repository(repo: RepoState) -> None:
-    """Clones repository with default (or source) branch."""
+async def clone_repository(repo: RepoState) -> bool:
+    """Clones repository with default (or source) branch.
+
+    :return: bool - was repo cloned successfully.
+    """
+    repo.cloning_state = CloningStates.CLONING.value
+
     clone_to = repo.args.clone_to
     repo.directory = str((Path(clone_to) / repo.name).expanduser())
 
@@ -48,7 +48,7 @@ async def clone_repository(repo: RepoState) -> None:
                     f'This is not a Git directory (wanted to clone to it): {repo.directory}'
                 )
                 repo.cloning_state = CloningStates.DIRECTORY_NOT_EMPTY.value
-                return
+                return False
 
             # If repository exists: clean it, pull changes, checkout default branch
             g: Git = Git(repo.directory)
@@ -79,6 +79,8 @@ async def clone_repository(repo: RepoState) -> None:
                 repo.cloning_state = CloningStates.CLONED.value
         else:
             repo.cloning_state = CloningStates.ACCESS_TOKEN_NOT_PROVIDED.value
+
+        return repo.cloning_state == CloningStates.CLONED.value  # noqa: TRY300
 
     except GitCommandError:
         repo.cloning_state = CloningStates.NOT_FOUND.value
