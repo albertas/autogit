@@ -143,7 +143,7 @@ async def test_clone_repository(
     default_branch,
 ):
     # TODO: Should define fixtures that setup and clean Git repositories based on experiment result.
-    with patch('autogit.actions._4_clone_repositories.Path.exists', return_value=False):
+    with patch('autogit.actions._3a_clone_repositories.Path.exists', return_value=False):
         # Could run it once in a ThrottledTasksExecutor and Mock Git later on.
         await clone_repository(repo)
         if source_branch == 'source' or (source_branch is None and target_branch == 'target'):
