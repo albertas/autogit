@@ -40,9 +40,10 @@ async def create_branch(repo: RepoState) -> bool:
 
     with contextlib.suppress(git.exc.GitCommandError):
         try:
-            g.execute(['git', 'pull', 'origin', repo.branch])
+            g.execute(['git', 'pull'])
         except git.exc.GitCommandError:
-            repo.branch_creation_state = BranchCreationState.FAILED_TO_PULL_CHANGES.value
+            # Git Error is expected when branch does not exist on the remote
+            pass # repo.branch_creation_state = BranchCreationState.FAILED_TO_PULL_CHANGES.value
 
     return repo.branch_creation_state in [
         BranchCreationState.CREATED.value,

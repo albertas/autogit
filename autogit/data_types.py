@@ -89,10 +89,6 @@ class RepoState:
             return '⌛ Applying changes'
         if self.modification_state == ModificationState.MODIFIED.value:
             return '⌛ Applied changes'
-        if self.modification_state == ModificationState.NO_FILES_CHANGED.value:
-            return '✅ \033[1;32mNo files changed\033[0m'
-        if self.modification_state == ModificationState.PUSHED_TO_REMOTE.value:
-            return '✅ \033[1;32mPushed changes to remote\033[0m'
         if self.modification_state == ModificationState.GOT_EXCEPTION.value:
             return f'❌ \033[1;33m{self.modification_state.replace("_", " ").capitalize()}\033[0m'
         return f'❌ {self.modification_state.replace("_", " ").capitalize()} Modification state display failure'
@@ -103,14 +99,14 @@ class RepoState:
         if self.push_to_remote_state == PushToRemoteState.NOT_STARTED.value:
             label = ''
         elif self.push_to_remote_state in [
-            ModificationState.COMMITING.value,
-            ModificationState.PUSHING_TO_REMOTE.value,
+            PushToRemoteState.COMMITING.value,
+            PushToRemoteState.PUSHING_TO_REMOTE.value,
         ]:
             label = f'⌛ {state}'
-        elif self.push_to_remote_state == ModificationState.PUSHED_TO_REMOTE.value:
+        elif self.push_to_remote_state == PushToRemoteState.PUSHED_TO_REMOTE.value:
             label = f'✅ \033[1;32m{state}\033[0m'
         elif self.push_to_remote_state in [
-            ModificationState.NO_FILES_CHANGED.value,
+            PushToRemoteState.NO_FILES_CHANGED.value,
             ModificationState.FAILED_TO_PUSH_TO_REMOTE.value,
         ]:
             label = f'❌ \033[1;33m{state}\033[0m'

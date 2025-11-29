@@ -13,7 +13,7 @@ from rich.console import Console, Group
 from rich.live import Live
 from rich.text import Text
 
-from autogit.constants import PullRequestStates
+from autogit.constants import PullRequestStates, ModificationState
 from autogit.data_types import RepoState
 from autogit.utils.throttled_tasks_executor import ThrottledTasksExecutor
 
@@ -69,18 +69,20 @@ async def show_repos_pull_request_creation_states_until_tasks_are_completed(
         live.update(get_repos_state_lines(repos))
 
 
-def show_pull_requests(repos):
+def show_pull_requests(repos: dict[str, RepoState]):
     print('\n\033[1;32m' + 'Created Pull Requests'.center(79, ' ') + '\033[0m')
     for repo in repos.values():
         if repo.pull_request_state == PullRequestStates.CREATED.value:
             print(f'\033[1;32m\033[0m {repo.pull_request_url.ljust(77, " ")} \033[1;32m\033[0m')
 
 
-def show_exception_file_paths(repos):
-    print('\n\033[1;31m' + 'Exception logs were written to these files:'.center(79, ' ') + '\033[0m')
-    for repo in repos.values():
-        if repo.exception_file_path:
-            print(f'{repo.exception_file_path.ljust(77, " ")}')
+def show_exception_file_paths(repos: dict[str, RepoState]):
+    are_there_exceptions = [repo for repo in repos.values() if repo.modification_state == ModificationState.GOT_EXCEPTION.value]
+    if are_there_exceptions:
+        print('\n\033[1;31m' + 'Exception logs were written to these files:'.center(79, ' ') + '\033[0m')
+        for repo in repos.values():
+            if repo.exception_file_path:
+                print(f'{repo.exception_file_path.ljust(77, " ")}')
 
 
 def show_failure(message: str) -> None:
