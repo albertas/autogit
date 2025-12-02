@@ -72,7 +72,13 @@ async def show_repos_pull_request_creation_states_until_tasks_are_completed(
 def show_pull_requests(repos: dict[str, RepoState]):
     print('\n\033[1;32m' + 'Created Pull Requests'.center(79, ' ') + '\033[0m')
     for repo in repos.values():
-        if repo.pull_request_state == PullRequestStates.CREATED.value:
+        if repo.pull_request_state in [
+            PullRequestStates.CREATED.value,
+            PullRequestStates.MERGED.value,
+            PullRequestStates.SET_TO_AUTO_MERGE.value,
+            PullRequestStates.FAILED_TO_AUTO_MERGE.value,
+            PullRequestStates.FAILED_TO_MERGE.value,
+        ]:
             print(f'\033[1;32m\033[0m {repo.pull_request_url.ljust(77, " ")} \033[1;32m\033[0m')
 
 
