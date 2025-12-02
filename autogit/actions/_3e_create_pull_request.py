@@ -1,4 +1,5 @@
 import json
+import asyncio
 from logging import getLogger
 
 import httpx
@@ -86,6 +87,7 @@ async def create_pull_request(repo: RepoState) -> bool:
             if repo.args.merge_on_success:
                 data['auto_merge'] = True
 
+            await asyncio.sleep(2)  # Wait for Gitlab to process created PR
             response = await client.put(
                 url=url,
                 headers=request_params.headers,
