@@ -129,9 +129,9 @@ class RepoState:
         if self.pull_request_state == PullRequestStates.SET_TO_AUTO_MERGE.value:
             return '✅ \033[1;32mPR Set to Auto Merge\033[0m'
         if self.pull_request_state == PullRequestStates.FAILED_TO_MERGE.value:
-            return '❌ \033[1;32mFailed to Merge PR\033[0m'
+            return '❌ \033[1;33mFailed to Merge PR\033[0m'
         if self.pull_request_state == PullRequestStates.FAILED_TO_AUTO_MERGE.value:
-            return '❌ \033[1;32mFailed to Auto-Merge PR\033[0m'
+            return '❌ \033[1;33mFailed to Auto-Merge PR\033[0m'
         if self.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
             return f'❌ \033[1;33mPR {self.pull_request_state.replace("_", " ").capitalize()}\033[0m  {self.pull_request_status_code} {self.pull_request_reason}'
         return f'❌ {self.pull_request_state.replace("_", " ").capitalize()} PR state display failure'
