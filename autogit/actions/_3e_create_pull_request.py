@@ -53,6 +53,7 @@ async def create_pull_request(repo: RepoState) -> bool:
 
     :return: bool - was pull request created successfully.
     """
+    # TODO: split this method into seperate ones for Gitlab and Github
     repo.pull_request_state = PullRequestStates.CREATING.value
 
     # https://stackoverflow.com/questions/56027634/creating-a-pull-request-using-the-api-of-github
@@ -72,7 +73,28 @@ async def create_pull_request(repo: RepoState) -> bool:
             repo.pull_request_status_code = response.status_code
             repo.pull_request_reason = json.dumps(response.json())
 
+        if repo.args.merge or repo.args.merge_on_success:
+            project_id = repo.path.replace('/', '%2F')
+            pull_request_id = response.json().get('iid')
+            url = f'https://{repo.domain}/api/v4/projects/{project_id}/merge_requests/{pull_request_id}/merge'
+            data = {'should_remove_source_branch': True}
+            if repo.args.merge_on_success:
+                data['auto_merge'] = True
+
+            response = await client.put(
+                url=url,
+                headers=request_params.headers,
+                json=data,
+            )
+
+            if response.status_code < 400:
+                if repo.args.merge_on_success:
+                    repo.pull_request_state = PullRequestStates.SET_TO_AUTO_MERGE.value
+                else:
+                    repo.pull_request_state = PullRequestStates.MERGED.value
+
     return repo.pull_request_state in [
         PullRequestStates.CREATED.value,
         PullRequestStates.MERGED.value,
+        PullRequestStates.SET_TO_AUTO_MERGE.value,
     ]

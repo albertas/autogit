@@ -112,6 +112,25 @@ def get_argument_parser() -> argparse.ArgumentParser:
         help='Unique hex for action identification',
     )
 
+    parser.add_argument(
+        '-f',
+        '--merge',
+        action='store_const',
+        dest='merge',
+        default=False,
+        const=True,
+        help='Merge PR by skipping CI pipeline and other checks',
+    )
+
+    parser.add_argument(
+        '--merge-on-success',
+        action='store_const',
+        dest='merge_on_success',
+        default=False,
+        const=True,
+        help='Set auto merge flag that automatically merges the PR when CI pipeline succeeds',
+    )
+
     return parser
 
 

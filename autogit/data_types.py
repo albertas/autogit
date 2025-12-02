@@ -24,6 +24,8 @@ class CliArguments:
         str | None
     )  # Branch to use in PR as a source branch (it will be created if does not exist)
     target_branch: str | None  # Branch to use in PR as a target branch
+    merge: bool  # Merge PR by skipping CI pipeline and other checks
+    merge_on_success: bool  # Set auto merge flag that automatically merges the PR when CI pipeline succeeds
 
 
 @dataclass
@@ -44,7 +46,7 @@ class RepoState:
 
     name: str = ''  # Short human readable repo identifier
     owner: str = ''  # Owner of this repo
-    path: str | None = ''  # Identifier of the repo: group/subgroup, owner and repo name
+    path: str | None = ''  # project_id - Identifier of the repo: group/subgroup, owner and repo name
     url: str = ''  # Url used to clone the repository
     domain: str = ''  # Domain where the remote repository is hosted at (parsed from url)
     pull_request_url: str = ''  # Link to created pull request
@@ -122,6 +124,10 @@ class RepoState:
             return '⌛ Creating PR'
         if self.pull_request_state == PullRequestStates.CREATED.value:
             return '✅ \033[1;32mCreated PR\033[0m'
+        if self.pull_request_state == PullRequestStates.MERGED.value:
+            return '✅ \033[1;32mMerged PR\033[0m'
+        if self.pull_request_state == PullRequestStates.SET_TO_AUTO_MERGE.value:
+            return '✅ \033[1;32mPR Set to Auto Merge\033[0m'
         if self.pull_request_state == PullRequestStates.GOT_BAD_RESPONSE.value:
             return f'❌ \033[1;33mPR {self.pull_request_state.replace("_", " ").capitalize()}\033[0m  {self.pull_request_status_code} {self.pull_request_reason}'
         return f'❌ {self.pull_request_state.replace("_", " ").capitalize()} PR state display failure'

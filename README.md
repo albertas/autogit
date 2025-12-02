@@ -64,6 +64,8 @@ These options could be used to specify more details:
 | `--clone-to`           | Path to temporal directory which will be used to clone repositories to | String | No |
 | `--repo`           | Link to repository | String | No |
 | `--repos`          | Filename which contains a list of repository links | String | No |
+| `--merge`          | Merge PR by skipping CI pipeline and other checks  | Boolean | No |
+| `--merge-on-success`          | Set auto merge flag that automatically merges the PR when CI pipeline succeeds | Boolean | No |
 
 
 Options to be added in the future releases:
