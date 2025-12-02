@@ -52,3 +52,5 @@ class PullRequestStates(Enum):
     NOT_CREATED = 'NOT_CREATED'  # Bad
     MERGED = 'MERGED'  # Good
     SET_TO_AUTO_MERGE = 'SET_TO_AUTO_MERGE'  # Good
+    FAILED_TO_AUTO_MERGE = 'FAILED_TO_AUTO_MERGE' # Bad
+    FAILED_TO_MERGE = 'FAILED_TO_MERGE' # Bad

@@ -1,4 +1,6 @@
 #! /usr/bin/python3
+import random
 
-with open('README.md', 'a+') as f:
-    f.write('\nHello\n')
+filename = f'README_{random.random()}.md'
+with open(filename, 'a+') as f:
+    f.write(f'\nHello\n')
